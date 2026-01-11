@@ -1,5 +1,7 @@
 package chess;
 
+import java.lang.annotation.ElementType;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -45,6 +47,18 @@ public class ChessPiece {
     }
 
     /**
+     * returns a boolean whether move is in bounds. true if it is false if not
+     */
+    public boolean isNextMoveInChessBounds(ChessPosition myPosition, int rowMoveDistance, int colMoveDistance ) {
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+
+        int newRow = row + rowMoveDistance;
+        int newCol = col + colMoveDistance;
+        return (newRow < 9 && newCol < 9) && (newRow > 0 && newCol > 0);
+    }
+
+    /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
      * danger
@@ -52,10 +66,38 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+
+        int[][] diagonalMovement = {
+                {1,1},
+                {1,-1},
+                {-1,1},
+                {-1,-1}
+        };
+
         ChessPiece piece = board.getPiece(myPosition);
+
+        List<ChessMove> moves = new ArrayList<>();
+
+
         if(piece.getPieceType() == PieceType.BISHOP) {
-            return List.of(new ChessMove(new ChessPosition(5,4), new ChessPosition(1,8),null));
+            int col = myPosition.getColumn();
+            int row = myPosition.getRow();
+
+            for(int[] direction : diagonalMovement) {
+                int i = 1;
+                while (isNextMoveInChessBounds(myPosition, direction[0] * i, direction[1] * i)) {
+
+                    moves.add(new ChessMove(
+                            new ChessPosition(row,col),
+                            new ChessPosition(row + (i * direction[0]), col + (i * direction[1])),
+                            null));
+                    i++;
+            }
+
+
+            }
+                return moves;
         }
         return List.of();
     }
-}
+};
