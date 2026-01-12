@@ -67,6 +67,14 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
 
+        int[][] pawnMovement = {
+                {1,0}, /* forward movement */
+                {2,0}, /* double forward movement only allowed at start CHECK FOR THIS */
+                {1,1}, /* CAPTURE PIECE AS WHITE up left */
+                {1,-1} /* CAPTURE PIECE AS WHITE up right */
+                     /* TO CAPTURE PIECES AS BLACK probably just have a if condition for black and multiply [] by -1  */
+        };
+
         int[][] knightMovement = {
                 { 2,1},
                 { 2,-1},
