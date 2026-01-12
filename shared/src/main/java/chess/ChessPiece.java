@@ -67,6 +67,13 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
 
+        int[][] verticalAndHorizontalMovement = {
+                {1,0},
+                {-1,0},
+                {0,1},
+                {0,-1}
+        };
+
         int[][] diagonalMovement = {
                 {1,1},
                 {1,-1},
@@ -78,6 +85,7 @@ public class ChessPiece {
 
         List<ChessMove> moves = new ArrayList<>();
 
+        /* BISHOP */
 
         if(piece.getPieceType() == PieceType.BISHOP) {
             int col = myPosition.getColumn();
@@ -86,18 +94,50 @@ public class ChessPiece {
             for(int[] direction : diagonalMovement) {
                 int i = 1;
                 while (isNextMoveInChessBounds(myPosition, direction[0] * i, direction[1] * i)) {
-
                     moves.add(new ChessMove(
                             new ChessPosition(row,col),
                             new ChessPosition(row + (i * direction[0]), col + (i * direction[1])),
                             null));
                     i++;
             }
-
-
             }
                 return moves;
         }
+
+
+        /* QUEEN */
+
+        if(piece.getPieceType() == PieceType.QUEEN) {
+            int col = myPosition.getColumn();
+            int row = myPosition.getRow();
+
+            for(int[] direction : diagonalMovement) {
+                int i = 1;
+                while (isNextMoveInChessBounds(myPosition, direction[0] * i, direction[1] * i)) {
+                    moves.add(new ChessMove(
+                            new ChessPosition(row,col),
+                            new ChessPosition(row + (i * direction[0]), col + (i * direction[1])),
+                            null));
+                    i++;
+                }
+            }
+
+            for(int[] direction : verticalAndHorizontalMovement) {
+                int i = 1;
+                while (isNextMoveInChessBounds(myPosition, direction[0] * i, direction[1] * i)) {
+                    moves.add(new ChessMove(
+                            new ChessPosition(row,col),
+                            new ChessPosition(row + (i * direction[0]), col + (i * direction[1])),
+                            null));
+                    i++;
+                }
+            }
+
+            return moves;
+        }
+
+
+
         return List.of();
     }
 };
