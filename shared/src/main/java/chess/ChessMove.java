@@ -62,11 +62,13 @@ public class ChessMove {
     @Override
     public int hashCode() {
         int result = 31;
-        result = result * 91 *
-        return 31 * startPosition.hashCode() + 71 * endPosition.hashCode() + 91 * Objects.hashCode(promotionPiece);
+        result = result * 91 + startPosition.hashCode();
+        result = result * 71 + endPosition.hashCode();
+        result = result * 97 + Objects.hashCode(promotionPiece);
+        return result;
     }
 }
 
 
 
-}
+
