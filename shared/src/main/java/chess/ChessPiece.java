@@ -67,6 +67,19 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
 
+        int[][] knightMovement = {
+                { 2,1},
+                { 2,-1},
+                {-2,1},
+                {-2,-1},
+                {1,2},
+                {1, -2},
+                {-1,2},
+                {-1,-2}
+
+
+        };
+
         int[][] verticalAndHorizontalMovement = {
                 {1,0},
                 {-1,0},
@@ -136,14 +149,13 @@ public class ChessPiece {
             return moves;
         }
 
-        /* KING   */
+        /* KING  */
 
         if(piece.getPieceType() == PieceType.KING) {
             int col = myPosition.getColumn();
             int row = myPosition.getRow();
 
             for(int[] direction : diagonalMovement) {
-                int i = 1;
                 if (isNextMoveInChessBounds(myPosition, direction[0], direction[1])) {
                     moves.add(new ChessMove(
                             new ChessPosition(row,col),
@@ -153,7 +165,6 @@ public class ChessPiece {
             }
 
             for(int[] direction : verticalAndHorizontalMovement) {
-                int i = 1;
                 if (isNextMoveInChessBounds(myPosition, direction[0], direction[1])) {
                     moves.add(new ChessMove(
                             new ChessPosition(row,col),
@@ -162,6 +173,45 @@ public class ChessPiece {
                 }
             }
 
+            return moves;
+        }
+
+        /* ROOK */
+
+        if(piece.getPieceType() == PieceType.ROOK) {
+            int col = myPosition.getColumn();
+            int row = myPosition.getRow();
+
+            for(int[] direction : verticalAndHorizontalMovement) {
+                int i = 1;
+                while (isNextMoveInChessBounds(myPosition, direction[0] * i, direction[1] * i)) {
+                    moves.add(new ChessMove(
+                            new ChessPosition(row,col),
+                            new ChessPosition(row + (i * direction[0]), col + (i * direction[1])),
+                            null));
+                    i++;
+                }
+            }
+
+            return moves;
+        }
+
+        /* KNIGHT */
+
+        if(piece.getPieceType() == PieceType.KNIGHT) {
+            int col = myPosition.getColumn();
+            int row = myPosition.getRow();
+            System.out.println(row);
+            System.out.println(col);
+
+            for(int[] direction : knightMovement) {
+                if(isNextMoveInChessBounds(myPosition, direction[0], direction[1])) {
+                    moves.add(new ChessMove(
+                            new ChessPosition(row,col),
+                            new ChessPosition(row + (direction[0]), col + (direction[1])),
+                            null));
+                }
+            }
             return moves;
         }
 
