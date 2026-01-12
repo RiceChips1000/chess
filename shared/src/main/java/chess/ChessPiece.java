@@ -136,7 +136,34 @@ public class ChessPiece {
             return moves;
         }
 
+        /* KING   */
 
+        if(piece.getPieceType() == PieceType.KING) {
+            int col = myPosition.getColumn();
+            int row = myPosition.getRow();
+
+            for(int[] direction : diagonalMovement) {
+                int i = 1;
+                if (isNextMoveInChessBounds(myPosition, direction[0], direction[1])) {
+                    moves.add(new ChessMove(
+                            new ChessPosition(row,col),
+                            new ChessPosition(row + (direction[0]), col + (direction[1])),
+                            null));
+                }
+            }
+
+            for(int[] direction : verticalAndHorizontalMovement) {
+                int i = 1;
+                if (isNextMoveInChessBounds(myPosition, direction[0], direction[1])) {
+                    moves.add(new ChessMove(
+                            new ChessPosition(row,col),
+                            new ChessPosition(row + (direction[0]), col + (direction[1])),
+                            null));
+                }
+            }
+
+            return moves;
+        }
 
         return List.of();
     }
