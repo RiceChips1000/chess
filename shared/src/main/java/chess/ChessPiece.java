@@ -4,6 +4,7 @@ import java.lang.annotation.ElementType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents a single chess piece
@@ -69,8 +70,8 @@ public class ChessPiece {
 
         int[][] pawnMovement = {
                 {1,0}, /* forward movement DOUBLE FOWARD IS TAKEN CARE OF WITH if statments */
-                {1,1}, /* CAPTURE PIECE AS WHITE up left */
-                {1,-1} /* CAPTURE PIECE AS WHITE up right */
+                 /* CAPTURE PIECE AS WHITE up left */
+                 /* CAPTURE PIECE AS WHITE up right */
                      /* TO CAPTURE PIECES AS BLACK probably just have a if condition for black and multiply [] by -1  */
         };
 
@@ -224,14 +225,20 @@ public class ChessPiece {
             int col = myPosition.getColumn();
             int row = myPosition.getRow();
 
-            if(piece.pieceColor == ChessGame.TeamColor.WHITE && col == 2) {
+
+            if(piece.pieceColor == ChessGame.TeamColor.WHITE && row == 2) {
                 moves.add(new ChessMove(myPosition, new ChessPosition(row + 2, col), null));
             }
-            if(piece.pieceColor == ChessGame.TeamColor.BLACK && col == 6) {
+            if(piece.pieceColor == ChessGame.TeamColor.BLACK && row == 7) {
                 moves.add(new ChessMove(myPosition, new ChessPosition(row - 2, col), null));
             }
             for(int[] direction : pawnMovement) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(direction[0], direction[1]), null));
+                if(piece.pieceColor == ChessGame.TeamColor.WHITE) {
+                    moves.add(new ChessMove(myPosition, new ChessPosition(row + direction[0], col + direction[1]), null));
+                }
+                if(piece.pieceColor == ChessGame.TeamColor.BLACK) {
+                    moves.add(new ChessMove(myPosition, new ChessPosition(row - direction[0], col - direction[1]), null));
+                }
 
             }
             return moves;
@@ -239,4 +246,19 @@ public class ChessPiece {
 
         return List.of();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessPiece that = (ChessPiece) o;
+        return pieceColor == that.pieceColor && type == that.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pieceColor, type);
+    }
 };
+
