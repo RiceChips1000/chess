@@ -68,8 +68,7 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
 
         int[][] pawnMovement = {
-                {1,0}, /* forward movement */
-                {2,0}, /* double forward movement only allowed at start CHECK FOR THIS */
+                {1,0}, /* forward movement DOUBLE FOWARD IS TAKEN CARE OF WITH if statments */
                 {1,1}, /* CAPTURE PIECE AS WHITE up left */
                 {1,-1} /* CAPTURE PIECE AS WHITE up right */
                      /* TO CAPTURE PIECES AS BLACK probably just have a if condition for black and multiply [] by -1  */
@@ -209,8 +208,6 @@ public class ChessPiece {
         if(piece.getPieceType() == PieceType.KNIGHT) {
             int col = myPosition.getColumn();
             int row = myPosition.getRow();
-            System.out.println(row);
-            System.out.println(col);
 
             for(int[] direction : knightMovement) {
                 if(isNextMoveInChessBounds(myPosition, direction[0], direction[1])) {
@@ -219,6 +216,23 @@ public class ChessPiece {
                             new ChessPosition(row + (direction[0]), col + (direction[1])),
                             null));
                 }
+            }
+            return moves;
+        }
+
+        if(piece.getPieceType() == PieceType.PAWN) {
+            int col = myPosition.getColumn();
+            int row = myPosition.getRow();
+
+            if(piece.pieceColor == ChessGame.TeamColor.WHITE && col == 2) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(row + 2, col), null));
+            }
+            if(piece.pieceColor == ChessGame.TeamColor.BLACK && col == 6) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(row - 2, col), null));
+            }
+            for(int[] direction : pawnMovement) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(direction[0], direction[1]), null));
+
             }
             return moves;
         }
