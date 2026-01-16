@@ -250,8 +250,7 @@ public class ChessPiece {
                 while (isNextMoveInChessBounds(myPosition, direction[0] * i, direction[1] * i)) {
                     ChessPosition otherPosition = new ChessPosition(
                             row + direction[0] * i,
-                            col + direction[1] * i
-                    );
+                            col + direction[1] * i);
 
                     ChessPiece nextMove = board.getPiece(otherPosition);
 
@@ -275,16 +274,25 @@ public class ChessPiece {
         /* KNIGHT */
 
         if(piece.getPieceType() == PieceType.KNIGHT) {
-
-
             for(int[] direction : knightMovement) {
-                if(isNextMoveInChessBounds(myPosition, direction[0], direction[1])) {
-                    moves.add(new ChessMove(
-                            new ChessPosition(row,col),
-                            new ChessPosition(row + (direction[0]), col + (direction[1])),
-                            null));
+                if (isNextMoveInChessBounds(myPosition, direction[0], direction[1])) {
+                    ChessPosition otherPosition = new ChessPosition(
+                            row + direction[0],
+                            col + direction[1]
+                    );
+
+                    ChessPiece nextMove = board.getPiece(otherPosition);
+
+                    if (nextMove == null) {
+                        moves.add(new ChessMove(myPosition, otherPosition, null));
+                    } else {
+                        if (!WhatTeamColor.isSameColor(board, this, otherPosition)) {
+                            moves.add(new ChessMove(myPosition, otherPosition, null));
+                        }
+                    }
                 }
             }
+
             return moves;
         }
 
