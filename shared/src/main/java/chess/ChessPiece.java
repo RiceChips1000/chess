@@ -68,6 +68,11 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
 
+        int col = myPosition.getColumn();
+        int row = myPosition.getRow();
+
+
+
         int[][] pawnMovement = {
                 {1,0}, /* forward movement DOUBLE FORWARD IS TAKEN CARE OF WITH if statments */
                  /* CAPTURE PIECE AS WHITE up left */
@@ -109,9 +114,6 @@ public class ChessPiece {
         /* BISHOP */
 
         if(piece.getPieceType() == PieceType.BISHOP) {
-            int col = myPosition.getColumn();
-            int row = myPosition.getRow();
-
             for(int[] direction : diagonalMovement) {
                 int i = 1;
                 while (isNextMoveInChessBounds(myPosition, direction[0] * i, direction[1] * i)) {
@@ -143,16 +145,27 @@ public class ChessPiece {
         /* QUEEN */
 
         if(piece.getPieceType() == PieceType.QUEEN) {
-            int col = myPosition.getColumn();
-            int row = myPosition.getRow();
-
             for(int[] direction : diagonalMovement) {
                 int i = 1;
                 while (isNextMoveInChessBounds(myPosition, direction[0] * i, direction[1] * i)) {
-                    moves.add(new ChessMove(
-                            new ChessPosition(row,col),
-                            new ChessPosition(row + (i * direction[0]), col + (i * direction[1])),
-                            null));
+                    ChessPosition otherPosition = new ChessPosition(
+                            row + direction[0] * i,
+                            col + direction[1] * i
+                    );
+
+                    ChessPiece nextMove = board.getPiece(otherPosition);
+
+                    if(nextMove == null) {
+                        moves.add(new ChessMove(
+                                new ChessPosition(row, col),
+                                new ChessPosition(row + (i * direction[0]), col + (i * direction[1])),
+                                null));
+                    } else {
+                        if (!WhatTeamColor.isSameColor(board, this, otherPosition)) {
+                            moves.add(new ChessMove(myPosition, otherPosition, null)); // capture
+                        }
+                        break;
+                    }
                     i++;
                 }
             }
@@ -160,22 +173,33 @@ public class ChessPiece {
             for(int[] direction : verticalAndHorizontalMovement) {
                 int i = 1;
                 while (isNextMoveInChessBounds(myPosition, direction[0] * i, direction[1] * i)) {
-                    moves.add(new ChessMove(
-                            new ChessPosition(row,col),
-                            new ChessPosition(row + (i * direction[0]), col + (i * direction[1])),
-                            null));
+                    ChessPosition otherPosition = new ChessPosition(
+                            row + direction[0] * i,
+                            col + direction[1] * i
+                    );
+
+                    ChessPiece nextMove = board.getPiece(otherPosition);
+
+                    if(nextMove == null) {
+                        moves.add(new ChessMove(
+                                new ChessPosition(row, col),
+                                new ChessPosition(row + (i * direction[0]), col + (i * direction[1])),
+                                null));
+                    } else {
+                        if (!WhatTeamColor.isSameColor(board, this, otherPosition)) {
+                            moves.add(new ChessMove(myPosition, otherPosition, null)); // capture
+                        }
+                        break;
+                    }
                     i++;
                 }
             }
-
             return moves;
         }
 
         /* KING  */
 
         if(piece.getPieceType() == PieceType.KING) {
-            int col = myPosition.getColumn();
-            int row = myPosition.getRow();
 
             for(int[] direction : diagonalMovement) {
                 if (isNextMoveInChessBounds(myPosition, direction[0], direction[1])) {
@@ -201,8 +225,7 @@ public class ChessPiece {
         /* ROOK */
 
         if(piece.getPieceType() == PieceType.ROOK) {
-            int col = myPosition.getColumn();
-            int row = myPosition.getRow();
+
 
             for(int[] direction : verticalAndHorizontalMovement) {
                 int i = 1;
@@ -221,8 +244,7 @@ public class ChessPiece {
         /* KNIGHT */
 
         if(piece.getPieceType() == PieceType.KNIGHT) {
-            int col = myPosition.getColumn();
-            int row = myPosition.getRow();
+
 
             for(int[] direction : knightMovement) {
                 if(isNextMoveInChessBounds(myPosition, direction[0], direction[1])) {
@@ -238,8 +260,6 @@ public class ChessPiece {
         /* PAWN */
 
         if(piece.getPieceType() == PieceType.PAWN) {
-            int col = myPosition.getColumn();
-            int row = myPosition.getRow();
 
 
             if(piece.pieceColor == ChessGame.TeamColor.WHITE && row == 2) {
