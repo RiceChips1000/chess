@@ -69,10 +69,10 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
 
         int[][] pawnMovement = {
-                {1,0}, /* forward movement DOUBLE FOWARD IS TAKEN CARE OF WITH if statments */
+                {1,0}, /* forward movement DOUBLE FORWARD IS TAKEN CARE OF WITH if statments */
                  /* CAPTURE PIECE AS WHITE up left */
                  /* CAPTURE PIECE AS WHITE up right */
-                     /* TO CAPTURE PIECES AS BLACK probably just have a if condition for black and multiply [] by -1  */
+                     /* TO CAPTURE PIECES AS BLACK probably just have an if condition for black and multiply [] by -1  */
         };
 
         int[][] knightMovement = {
@@ -115,10 +115,24 @@ public class ChessPiece {
             for(int[] direction : diagonalMovement) {
                 int i = 1;
                 while (isNextMoveInChessBounds(myPosition, direction[0] * i, direction[1] * i)) {
-                    moves.add(new ChessMove(
-                            new ChessPosition(row,col),
-                            new ChessPosition(row + (i * direction[0]), col + (i * direction[1])),
-                            null));
+                    ChessPosition otherPosition = new ChessPosition(
+                            row + direction[0] * i,
+                             col + direction[1] * i
+                    );
+
+                    ChessPiece nextMove = board.getPiece(otherPosition);
+
+                    if(nextMove == null) {
+                        moves.add(new ChessMove(
+                                new ChessPosition(row, col),
+                                new ChessPosition(row + (i * direction[0]), col + (i * direction[1])),
+                                null));
+                    } else {
+                        if (!WhatTeamColor.isSameColor(board, this, otherPosition)) {
+                            moves.add(new ChessMove(myPosition, otherPosition, null)); // capture
+                        }
+                        break;
+                    }
                     i++;
             }
             }
