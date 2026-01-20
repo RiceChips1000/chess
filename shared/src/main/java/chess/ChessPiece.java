@@ -16,6 +16,42 @@ public class ChessPiece {
     private final ChessGame.TeamColor pieceColor;
     private final ChessPiece.PieceType type;
 
+    int[][] pawnMovement = {
+            {1, 0} /* forward movement DOUBLE FORWARD IS TAKEN CARE OF WITH if statments */
+    };
+
+    int[][] pawnCapture = {
+            {1, 1},
+            {1, -1}/* CAPTURE PIECE AS WHITE up left */
+            /* CAPTURE PIECE AS WHITE up right */
+            /* TO CAPTURE PIECES AS BLACK probably just have an if condition for black and multiply [] by -1  */
+    };
+
+    int[][] knightMovement = {
+            {2, 1},
+            {2, -1},
+            {-2, 1},
+            {-2, -1},
+            {1, 2},
+            {1, -2},
+            {-1, 2},
+            {-1, -2}
+    };
+
+    int[][] verticalAndHorizontalMovement = {
+            {1, 0},
+            {-1, 0},
+            {0, 1},
+            {0, -1}
+    };
+
+    int[][] diagonalMovement = {
+            {1, 1},
+            {1, -1},
+            {-1, 1},
+            {-1, -1}
+    };
+
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.pieceColor = pieceColor;
         this.type = type;
@@ -50,7 +86,7 @@ public class ChessPiece {
     /**
      * returns a boolean whether move is in bounds. true if it is false if not
      */
-    public boolean isNextMoveInChessBounds(ChessPosition myPosition, int rowMoveDistance, int colMoveDistance ) {
+    public boolean isNextMoveInChessBounds(ChessPosition myPosition, int rowMoveDistance, int colMoveDistance) {
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
 
@@ -67,81 +103,18 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-
-        int col = myPosition.getColumn();
         int row = myPosition.getRow();
+        int col = myPosition.getColumn();
 
-
-        int[][] pawnMovement = {
-                {1, 0} /* forward movement DOUBLE FORWARD IS TAKEN CARE OF WITH if statments */
-        };
-
-        int[][] pawnCapture = {
-                {1, 1},
-                {1, -1}/* CAPTURE PIECE AS WHITE up left */
-                /* CAPTURE PIECE AS WHITE up right */
-                /* TO CAPTURE PIECES AS BLACK probably just have an if condition for black and multiply [] by -1  */
-        };
-
-        int[][] knightMovement = {
-                {2, 1},
-                {2, -1},
-                {-2, 1},
-                {-2, -1},
-                {1, 2},
-                {1, -2},
-                {-1, 2},
-                {-1, -2}
-
-
-        };
-
-        int[][] verticalAndHorizontalMovement = {
-                {1, 0},
-                {-1, 0},
-                {0, 1},
-                {0, -1}
-        };
-
-        int[][] diagonalMovement = {
-                {1, 1},
-                {1, -1},
-                {-1, 1},
-                {-1, -1}
-        };
+        List<ChessMove> moves = new ArrayList<>();
 
         ChessPiece piece = board.getPiece(myPosition);
 
-        List<ChessMove> moves = new ArrayList<>();
 
         /* BISHOP */
 
         if (piece.getPieceType() == PieceType.BISHOP) {
-            for (int[] direction : diagonalMovement) {
-                int i = 1;
-                while (isNextMoveInChessBounds(myPosition, direction[0] * i, direction[1] * i)) {
-                    ChessPosition otherPosition = new ChessPosition(
-                            row + direction[0] * i,
-                            col + direction[1] * i
-                    );
-
-                    ChessPiece nextMove = board.getPiece(otherPosition);
-
-                    if (nextMove == null) {
-                        moves.add(new ChessMove(
-                                new ChessPosition(row, col),
-                                new ChessPosition(row + (i * direction[0]), col + (i * direction[1])),
-                                null));
-                    } else {
-                        if (!WhatTeamColor.isSameColor(board, this, otherPosition)) {
-                            moves.add(new ChessMove(myPosition, otherPosition, null)); // capture
-                        }
-                        break;
-                    }
-                    i++;
-                }
-            }
-            return moves;
+            return bishopMovesCalculator(board, myPosition,moves, row, col);
         }
 
 
@@ -412,6 +385,38 @@ public class ChessPiece {
         return moves;
     }
 
+    public Collection<ChessMove> bishopMovesCalculator(ChessBoard board, ChessPosition myPosition, List<ChessMove> moves, int row, int col) {
+        for(int[] direction : diagonalMovement) {
+        int i = 1;
+        while (isNextMoveInChessBounds(myPosition, direction[0] * i, direction[1] * i)) {
+            ChessPosition otherPosition = new ChessPosition(
+                    row + direction[0] * i,
+                    col + direction[1] * i
+            );
+
+            ChessPiece nextMove = board.getPiece(otherPosition);
+
+            if (nextMove == null) {
+                moves.add(new ChessMove(
+                        new ChessPosition(row, col),
+                        new ChessPosition(row + (i * direction[0]), col + (i * direction[1])),
+                        null));
+            } else {
+                if (!WhatTeamColor.isSameColor(board, this, otherPosition)) {
+                    moves.add(new ChessMove(myPosition, otherPosition, null)); // capture
+                }
+                break;
+            }
+            i++;
+        }
+    }
+                return moves;
+}
+
+
+    public Collection<ChessMove> queenMovesCalculator(ChessBoard board, ChessPosition myPosition, List<ChessMove> moves, int row, int col) {
+        return null;
+        }
 
 
     @Override
