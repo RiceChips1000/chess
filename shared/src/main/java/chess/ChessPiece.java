@@ -316,7 +316,8 @@ public class ChessPiece {
         return moves;
     }
 
-    public Collection<ChessMove> pawnMovesCalculator(ChessBoard board, ChessPosition myPosition, List<ChessMove> moves,ChessPiece piece, int row, int col) {
+    public Collection<ChessMove> pawnMovesCalculator(ChessBoard board, ChessPosition myPosition,
+                                                     List<ChessMove> moves,ChessPiece piece, int row, int col) {
         if (piece.pieceColor == ChessGame.TeamColor.WHITE && row == 2) {
             ChessPosition oneInFrontWhite = new ChessPosition(row + 1, col);
             ChessPosition twoInFrontWhite = new ChessPosition(row + 2, col);
@@ -389,6 +390,7 @@ public class ChessPiece {
             }
 
             if (piece.getTeamColor() == ChessGame.TeamColor.BLACK && isNextMoveInChessBounds(myPosition, -direction[0], -direction[1])) {
+
                 ChessPosition frontLeftThenRight = new ChessPosition(row - direction[0], col - direction[1]);
                 ChessPiece target = board.getPiece(frontLeftThenRight);
                 if (target != null && !WhatTeamColor.isSameColor(board, this, frontLeftThenRight)) {
