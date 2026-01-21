@@ -356,11 +356,8 @@ public class ChessPiece {
                 }
             }
 
-            if (piece.pieceColor == ChessGame.TeamColor.BLACK &&
-                    isNextMoveInChessBounds(myPosition, -direction[0], 0)) {
-
+            if (piece.pieceColor == ChessGame.TeamColor.BLACK && isNextMoveInChessBounds(myPosition, -direction[0], 0)) {
                 ChessPosition oneInFrontBlack = new ChessPosition(row - direction[0], col);
-
                 if (board.getPiece(oneInFrontBlack) == null) {
                     if (row - direction[0] == 1) {
                         moves.add(new ChessMove(myPosition, oneInFrontBlack, PieceType.QUEEN));
@@ -373,19 +370,12 @@ public class ChessPiece {
                 }
             }
         }
-
         for (int[] direction : pawnCapture) {
-
-            if (piece.getTeamColor() == ChessGame.TeamColor.WHITE &&
-                    isNextMoveInChessBounds(myPosition, direction[0], direction[1])) {
-
+            if (piece.getTeamColor() == ChessGame.TeamColor.WHITE && isNextMoveInChessBounds(myPosition, direction[0], direction[1])) {
                 ChessPosition frontLeftThenRight = new ChessPosition(
                         row + direction[0],
-                        col + direction[1]
-                );
-
+                        col + direction[1]);
                 ChessPiece target = board.getPiece(frontLeftThenRight);
-
                 if (target != null && !WhatTeamColor.isSameColor(board, this, frontLeftThenRight)) {
                     if (row + direction[0] == 8) {
                         moves.add(new ChessMove(myPosition, frontLeftThenRight, PieceType.QUEEN));
@@ -398,16 +388,9 @@ public class ChessPiece {
                 }
             }
 
-            if (piece.getTeamColor() == ChessGame.TeamColor.BLACK &&
-                    isNextMoveInChessBounds(myPosition, -direction[0], -direction[1])) {
-
-                ChessPosition frontLeftThenRight = new ChessPosition(
-                        row - direction[0],
-                        col - direction[1]
-                );
-
+            if (piece.getTeamColor() == ChessGame.TeamColor.BLACK && isNextMoveInChessBounds(myPosition, -direction[0], -direction[1])) {
+                ChessPosition frontLeftThenRight = new ChessPosition(row - direction[0], col - direction[1]);
                 ChessPiece target = board.getPiece(frontLeftThenRight);
-
                 if (target != null && !WhatTeamColor.isSameColor(board, this, frontLeftThenRight)) {
                     if (row - direction[0] == 1) {
                         moves.add(new ChessMove(myPosition, frontLeftThenRight, PieceType.QUEEN));
