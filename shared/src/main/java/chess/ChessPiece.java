@@ -105,49 +105,38 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
-
         List<ChessMove> moves = new ArrayList<>();
-
         ChessPiece piece = board.getPiece(myPosition);
 
-
         /* BISHOP */
-
         if (piece.getPieceType() == PieceType.BISHOP) {
             return bishopMovesCalculator(board, myPosition,moves, row, col);
         }
 
-
         /* QUEEN */
-
         if (piece.getPieceType() == PieceType.QUEEN) {
             return queenMovesCalculator(board, myPosition,moves, row, col);
         }
 
         /* KING  */
-
         if (piece.getPieceType() == PieceType.KING) {
             return kingMovesCalculator(board, myPosition, moves, row, col);
         }
 
         /* ROOK */
-
         if (piece.getPieceType() == PieceType.ROOK) {
             return rookMovesCalculator(board, myPosition, moves, row, col);
         }
 
         /* KNIGHT */
-
         if (piece.getPieceType() == PieceType.KNIGHT) {
             return knightMovesCalculator(board, myPosition, moves, row, col);
         }
 
         /* PAWN */
-
         if (piece.getPieceType() == PieceType.PAWN) {
             return pawnMovesCalculator(board, myPosition, moves, piece, row, col);
         }
-
         return moves;
     }
 
