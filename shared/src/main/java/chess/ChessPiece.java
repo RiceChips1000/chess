@@ -186,9 +186,9 @@ public class ChessPiece {
     }
 
 
-    public Collection<ChessMove> kingMovesCalculator(ChessBoard board, ChessPosition myPosition, List<ChessMove> moves, int row, int col) {
-
-        for (int[] direction : diagonalMovement) {
+    public Collection<ChessMove> kingMovesSlider(ChessBoard board, ChessPosition myPosition, List<ChessMove> moves,
+                                                 int[][] movementPattern, int row, int col) {
+        for (int[] direction : movementPattern) {
             if (isNextMoveInChessBounds(myPosition, direction[0], direction[1])) {
                 ChessPosition otherPosition = new ChessPosition(
                         row + direction[0],
@@ -206,27 +206,13 @@ public class ChessPiece {
                 }
             }
         }
-
-        for (int[] direction : verticalAndHorizontalMovement) {
-            if (isNextMoveInChessBounds(myPosition, direction[0], direction[1])) {
-                ChessPosition otherPosition = new ChessPosition(
-                        row + direction[0],
-                        col + direction[1]
-                );
-
-                ChessPiece nextMove = board.getPiece(otherPosition);
-
-                if (nextMove == null) {
-                    moves.add(new ChessMove(myPosition, otherPosition, null));
-                } else {
-                    if (!WhatTeamColor.isSameColor(board, this, otherPosition)) {
-                        moves.add(new ChessMove(myPosition, otherPosition, null));
-                    }
-                }
-            }
-        }
-
         return moves;
+    }
+
+
+    public Collection<ChessMove> kingMovesCalculator(ChessBoard board, ChessPosition myPosition, List<ChessMove> moves, int row, int col) {
+        kingMovesSlider(board, myPosition, moves, diagonalMovement, row, col);
+        return kingMovesSlider(board, myPosition, moves, verticalAndHorizontalMovement, row, col);
     }
 
     public Collection<ChessMove> rookMovesCalculator(ChessBoard board, ChessPosition myPosition, List<ChessMove> moves, int row, int col) {
