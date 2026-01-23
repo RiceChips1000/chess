@@ -140,86 +140,71 @@ public class ChessPiece {
         return moves;
     }
 
-    public Collection<ChessMove> bishopMovesCalculator(ChessBoard board, ChessPosition myPosition, List<ChessMove> moves, int row, int col) {
+    public Collection<ChessMove> diagonalMoves(ChessBoard board, ChessPosition myPosition, List<ChessMove> moves, int row, int col){
         for(int[] direction : diagonalMovement) {
-        int i = 1;
-        while (isNextMoveInChessBounds(myPosition, direction[0] * i, direction[1] * i)) {
-            ChessPosition otherPosition = new ChessPosition(
-                    row + direction[0] * i,
-                    col + direction[1] * i
-            );
+            int i = 1;
+            while (isNextMoveInChessBounds(myPosition, direction[0] * i, direction[1] * i)) {
+                ChessPosition otherPosition = new ChessPosition(
+                        row + direction[0] * i,
+                        col + direction[1] * i
+                );
 
-            ChessPiece nextMove = board.getPiece(otherPosition);
+                ChessPiece nextMove = board.getPiece(otherPosition);
 
-            if (nextMove == null) {
-                moves.add(new ChessMove(
-                        new ChessPosition(row, col),
-                        new ChessPosition(row + (i * direction[0]), col + (i * direction[1])),
-                        null));
-            } else {
-                if (!WhatTeamColor.isSameColor(board, this, otherPosition)) {
-                    moves.add(new ChessMove(myPosition, otherPosition, null)); // capture
+                if (nextMove == null) {
+                    moves.add(new ChessMove(
+                            new ChessPosition(row, col),
+                            new ChessPosition(row + (i * direction[0]), col + (i * direction[1])),
+                            null));
+                } else {
+                    if (!WhatTeamColor.isSameColor(board, this, otherPosition)) {
+                        moves.add(new ChessMove(myPosition, otherPosition, null)); // capture
+                    }
+                    break;
                 }
-                break;
+                i++;
             }
-            i++;
         }
+        return moves;
     }
-                return moves;
-}
+
+    public Collection<ChessMove> verticalAndHorizontalMoves(ChessBoard board, ChessPosition myPosition, List<ChessMove> moves, int row, int col){
+        for(int[] direction : verticalAndHorizontalMovement) {
+            int i = 1;
+            while (isNextMoveInChessBounds(myPosition, direction[0] * i, direction[1] * i)) {
+                ChessPosition otherPosition = new ChessPosition(
+                        row + direction[0] * i,
+                        col + direction[1] * i
+                );
+
+                ChessPiece nextMove = board.getPiece(otherPosition);
+
+                if (nextMove == null) {
+                    moves.add(new ChessMove(
+                            new ChessPosition(row, col),
+                            new ChessPosition(row + (i * direction[0]), col + (i * direction[1])),
+                            null));
+                } else {
+                    if (!WhatTeamColor.isSameColor(board, this, otherPosition)) {
+                        moves.add(new ChessMove(myPosition, otherPosition, null)); // capture
+                    }
+                    break;
+                }
+                i++;
+            }
+        }
+        return moves;
+    }
+
+
+    public Collection<ChessMove> bishopMovesCalculator(ChessBoard board, ChessPosition myPosition, List<ChessMove> moves, int row, int col) {
+        return diagonalMoves(board, myPosition, moves, row, col);
+    }
 
 
     public Collection<ChessMove> queenMovesCalculator(ChessBoard board, ChessPosition myPosition, List<ChessMove> moves, int row, int col) {
-            for (int[] direction : diagonalMovement) {
-                int i = 1;
-                while (isNextMoveInChessBounds(myPosition, direction[0] * i, direction[1] * i)) {
-                    ChessPosition otherPosition = new ChessPosition(
-                            row + direction[0] * i,
-                            col + direction[1] * i
-                    );
-
-                    ChessPiece nextMove = board.getPiece(otherPosition);
-
-                    if (nextMove == null) {
-                        moves.add(new ChessMove(
-                                new ChessPosition(row, col),
-                                new ChessPosition(row + (i * direction[0]), col + (i * direction[1])),
-                                null));
-                    } else {
-                        if (!WhatTeamColor.isSameColor(board, this, otherPosition)) {
-                            moves.add(new ChessMove(myPosition, otherPosition, null)); // capture
-                        }
-                        break;
-                    }
-                    i++;
-                }
-            }
-
-            for (int[] direction : verticalAndHorizontalMovement) {
-                int i = 1;
-                while (isNextMoveInChessBounds(myPosition, direction[0] * i, direction[1] * i)) {
-                    ChessPosition otherPosition = new ChessPosition(
-                            row + direction[0] * i,
-                            col + direction[1] * i
-                    );
-
-                    ChessPiece nextMove = board.getPiece(otherPosition);
-
-                    if (nextMove == null) {
-                        moves.add(new ChessMove(
-                                new ChessPosition(row, col),
-                                new ChessPosition(row + (i * direction[0]), col + (i * direction[1])),
-                                null));
-                    } else {
-                        if (!WhatTeamColor.isSameColor(board, this, otherPosition)) {
-                            moves.add(new ChessMove(myPosition, otherPosition, null)); // capture
-                        }
-                        break;
-                    }
-                    i++;
-                }
-            }
-            return moves;
+        diagonalMoves(board, myPosition, moves, row, col);
+        return verticalAndHorizontalMoves(board, myPosition, moves, row, col);
     }
 
 
@@ -267,30 +252,7 @@ public class ChessPiece {
     }
 
     public Collection<ChessMove> rookMovesCalculator(ChessBoard board, ChessPosition myPosition, List<ChessMove> moves, int row, int col) {
-        for (int[] direction : verticalAndHorizontalMovement) {
-            int i = 1;
-            while (isNextMoveInChessBounds(myPosition, direction[0] * i, direction[1] * i)) {
-                ChessPosition otherPosition = new ChessPosition(
-                        row + direction[0] * i,
-                        col + direction[1] * i);
-
-                ChessPiece nextMove = board.getPiece(otherPosition);
-
-                if (nextMove == null) {
-                    moves.add(new ChessMove(
-                            new ChessPosition(row, col),
-                            new ChessPosition(row + (i * direction[0]), col + (i * direction[1])),
-                            null));
-                } else {
-                    if (!WhatTeamColor.isSameColor(board, this, otherPosition)) {
-                        moves.add(new ChessMove(myPosition, otherPosition, null)); // capture
-                    }
-                    break;
-                }
-                i++;
-            }
-        }
-        return moves;
+        return verticalAndHorizontalMoves(board, myPosition, moves, row, col);
     }
 
     public Collection<ChessMove> knightMovesCalculator(ChessBoard board, ChessPosition myPosition, List<ChessMove> moves, int row, int col) {
