@@ -186,7 +186,7 @@ public class ChessPiece {
     }
 
 
-    public Collection<ChessMove> kingMovesSlider(ChessBoard board, ChessPosition myPosition, List<ChessMove> moves,
+    public Collection<ChessMove> kingAndKnightMovesSlider(ChessBoard board, ChessPosition myPosition, List<ChessMove> moves,
                                                  int[][] movementPattern, int row, int col) {
         for (int[] direction : movementPattern) {
             if (isNextMoveInChessBounds(myPosition, direction[0], direction[1])) {
@@ -211,8 +211,8 @@ public class ChessPiece {
 
 
     public Collection<ChessMove> kingMovesCalculator(ChessBoard board, ChessPosition myPosition, List<ChessMove> moves, int row, int col) {
-        kingMovesSlider(board, myPosition, moves, diagonalMovement, row, col);
-        return kingMovesSlider(board, myPosition, moves, verticalAndHorizontalMovement, row, col);
+        kingAndKnightMovesSlider(board, myPosition, moves, diagonalMovement, row, col);
+        return kingAndKnightMovesSlider(board, myPosition, moves, verticalAndHorizontalMovement, row, col);
     }
 
     public Collection<ChessMove> rookMovesCalculator(ChessBoard board, ChessPosition myPosition, List<ChessMove> moves, int row, int col) {
@@ -220,26 +220,7 @@ public class ChessPiece {
     }
 
     public Collection<ChessMove> knightMovesCalculator(ChessBoard board, ChessPosition myPosition, List<ChessMove> moves, int row, int col) {
-        for (int[] direction : knightMovement) {
-            if (isNextMoveInChessBounds(myPosition, direction[0], direction[1])) {
-                ChessPosition otherPosition = new ChessPosition(
-                        row + direction[0],
-                        col + direction[1]
-                );
-
-                ChessPiece nextMove = board.getPiece(otherPosition);
-
-                if (nextMove == null) {
-                    moves.add(new ChessMove(myPosition, otherPosition, null));
-                } else {
-                    if (!WhatTeamColor.isSameColor(board, this, otherPosition)) {
-                        moves.add(new ChessMove(myPosition, otherPosition, null));
-                    }
-                }
-            }
-        }
-
-        return moves;
+        return kingAndKnightMovesSlider(board, myPosition, moves, knightMovement, row, col);
     }
 
     public Collection<ChessMove> pawnMovesCalculator(ChessBoard board, ChessPosition myPosition,
