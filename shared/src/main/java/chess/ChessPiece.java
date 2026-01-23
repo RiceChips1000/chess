@@ -140,14 +140,11 @@ public class ChessPiece {
         return moves;
     }
 
-    public Collection<ChessMove> diagonalMoves(ChessBoard board, ChessPosition myPosition, List<ChessMove> moves, int row, int col){
-        for(int[] direction : diagonalMovement) {
+    public Collection<ChessMove> slidingMoves(ChessBoard board, ChessPosition myPosition, List<ChessMove> moves, int[][] movementPattern, int row, int col){
+        for(int[] direction : movementPattern) {
             int i = 1;
             while (isNextMoveInChessBounds(myPosition, direction[0] * i, direction[1] * i)) {
-                ChessPosition otherPosition = new ChessPosition(
-                        row + direction[0] * i,
-                        col + direction[1] * i
-                );
+                ChessPosition otherPosition = new ChessPosition(row + direction[0] * i, col + direction[1] * i);
 
                 ChessPiece nextMove = board.getPiece(otherPosition);
 
@@ -168,32 +165,12 @@ public class ChessPiece {
         return moves;
     }
 
+    public Collection<ChessMove> diagonalMoves(ChessBoard board, ChessPosition myPosition, List<ChessMove> moves, int row, int col){
+        return slidingMoves( board, myPosition, moves, diagonalMovement, row, col);
+    }
+
     public Collection<ChessMove> verticalAndHorizontalMoves(ChessBoard board, ChessPosition myPosition, List<ChessMove> moves, int row, int col){
-        for(int[] direction : verticalAndHorizontalMovement) {
-            int i = 1;
-            while (isNextMoveInChessBounds(myPosition, direction[0] * i, direction[1] * i)) {
-                ChessPosition otherPosition = new ChessPosition(
-                        row + direction[0] * i,
-                        col + direction[1] * i
-                );
-
-                ChessPiece nextMove = board.getPiece(otherPosition);
-
-                if (nextMove == null) {
-                    moves.add(new ChessMove(
-                            new ChessPosition(row, col),
-                            new ChessPosition(row + (i * direction[0]), col + (i * direction[1])),
-                            null));
-                } else {
-                    if (!WhatTeamColor.isSameColor(board, this, otherPosition)) {
-                        moves.add(new ChessMove(myPosition, otherPosition, null)); // capture
-                    }
-                    break;
-                }
-                i++;
-            }
-        }
-        return moves;
+        return slidingMoves( board, myPosition, moves, verticalAndHorizontalMovement, row, col);
     }
 
 
