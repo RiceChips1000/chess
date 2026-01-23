@@ -140,7 +140,8 @@ public class ChessPiece {
         return moves;
     }
 
-    public Collection<ChessMove> slidingMoves(ChessBoard board, ChessPosition myPosition, List<ChessMove> moves, int[][] movementPattern, int row, int col){
+    public Collection<ChessMove> slidingMoves(ChessBoard board, ChessPosition myPosition, List<ChessMove> moves,
+                                              int[][] movementPattern, int row, int col){
         for(int[] direction : movementPattern) {
             int i = 1;
             while (isNextMoveInChessBounds(myPosition, direction[0] * i, direction[1] * i)) {
