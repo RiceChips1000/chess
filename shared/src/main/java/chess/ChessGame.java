@@ -105,7 +105,11 @@ public void makeMove(ChessMove move) throws InvalidMoveException {
  * @return True if the specified team is in check
  */
 public boolean isInCheck(TeamColor teamColor) {
-    throw new RuntimeException("Not implemented");
+    ChessPosition kingPosition = findKing(teamColor);
+    if(kingPosition == null) {
+        return false; // No king found
+    }
+    return null;
 }
 
 /**
