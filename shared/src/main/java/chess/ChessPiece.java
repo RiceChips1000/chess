@@ -142,7 +142,9 @@ public class ChessPiece {
         }
     }
 
-    private void addPawnForwardMoves(ChessBoard board, ChessPosition myPosition, int row, int col, int direction, int startRow, int promotionRow, List<ChessMove> moves) {
+    private void addPawnForwardMoves(ChessBoard board, ChessPosition myPosition,
+                                     int row, int col, int direction, int startRow,
+                                     int promotionRow, List<ChessMove> moves) {
         int nextRow = row + direction;
         if(isValidPosition(nextRow, col)) {
             ChessPosition forwardOne = new ChessPosition(nextRow, col);
@@ -163,7 +165,9 @@ public class ChessPiece {
         }
     }
 
-    private void addPawnCaptureMoves(ChessBoard board, ChessPosition myPosition, int row, int col, int direction, int promotionRow, List<ChessMove> moves) {
+    private void addPawnCaptureMoves(ChessBoard board, ChessPosition myPosition,
+                                     int row, int col, int direction,
+                                     int promotionRow, List<ChessMove> moves) {
         int[] diagonalCapture = {-1, 1};
         for(int i = 0; i < diagonalCapture.length; i++) {
             int newCapturePosCol = col + diagonalCapture[i];
