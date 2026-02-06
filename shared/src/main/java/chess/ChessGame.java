@@ -162,7 +162,7 @@ public void setBoard(ChessBoard board) {
  * @return the chessboard
  */
 public ChessBoard getBoard() {
-    throw new RuntimeException("Not implemented");
+    return board;
 }
     private ChessPosition findKing(TeamColor teamColor) {
         for(int row = 1; row <= 8; row++) {
