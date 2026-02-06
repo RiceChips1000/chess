@@ -154,7 +154,7 @@ public class ChessPiece {
         if(type == PieceType.KING){
             for(int dirRow = -1; dirRow <= 1; dirRow++){
                 for(int dirColKing = -1; dirColKing <= 1; dirColKing++) {
-                    if(dirRow == 0 && dirColKing == 0) continue;
+                    if(dirRow == 0 && dirColKing == 0) {continue;}
                     int newRow = row + dirRow;
                     int newCol = col + dirColKing;
                     if(newRow >= 1 && newRow<= 8 && newCol >= 1 && newCol <= 8) {
