@@ -164,6 +164,18 @@ public void setBoard(ChessBoard board) {
 public ChessBoard getBoard() {
     return board;
 }
+
+    private boolean wouldLeaveKingInCheck(ChessMove move, TeamColor teamColor) {
+        ChessPosition start = move.getStartPosition();
+        ChessPosition end = move.getEndPosition();
+
+        ChessPiece movingPiece = board.getPiece(start);
+
+
+        return null;
+    }
+
+
     private ChessPosition findKing(TeamColor teamColor) {
         for(int row = 1; row <= 8; row++) {
             for(int col = 1; col <= 8; col++) {
