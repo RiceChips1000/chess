@@ -138,6 +138,24 @@ public void setBoard(ChessBoard board) {
     throw new RuntimeException("Not implemented");
 }
 
+    private ChessBoard copyBoard(ChessBoard original) {
+        ChessBoard copy = new ChessBoard();
+
+        for(int row = 1; row <= 8; row++) {
+            for(int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = original.getPiece(position);
+
+                if(piece != null) {
+                    ChessPiece pieceCopy = new ChessPiece(piece.getTeamColor(), piece.getPieceType());
+                    copy.addPiece(position, pieceCopy);
+                }
+            }
+        }
+
+        return copy;
+    }
+
 /**
  * Gets the current chessboard
  *
