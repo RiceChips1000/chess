@@ -135,7 +135,13 @@ public boolean isInCheck(TeamColor teamColor) {
  * @return True if the specified team is in checkmate
  */
 public boolean isInCheckmate(TeamColor teamColor) {
-    throw new RuntimeException("Not implemented");
+    // T check for the check because checkmate requires check at least
+    if(!isInCheck(teamColor)) {
+        return false;
+    }
+
+
+    return !hasAnyValidMoves(teamColor);
 }
 
 /**
