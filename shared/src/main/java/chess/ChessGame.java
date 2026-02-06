@@ -87,7 +87,6 @@ public void makeMove(ChessMove move) throws InvalidMoveException {
 
     board.addPiece(start, null); // Remove piece from start
 
-    // Handle pawn promotion
     if(move.getPromotionPiece() != null) {
         board.addPiece(end, new ChessPiece(piece.getTeamColor(), move.getPromotionPiece()));
     }   else {
@@ -106,10 +105,27 @@ public void makeMove(ChessMove move) throws InvalidMoveException {
  */
 public boolean isInCheck(TeamColor teamColor) {
     ChessPosition kingPosition = findKing(teamColor);
-    if(kingPosition == null) {
-        return false; // No king found
+    if (kingPosition == null) {
+        return false;
     }
-    return null;
+    TeamColor opponentColor = (teamColor == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
+
+    for (int row = 1; row <= 8; row++) {
+        for (int col = 1; col <= 8; col++) {
+            ChessPosition position = new ChessPosition(row, col);
+            ChessPiece piece = board.getPiece(position);
+
+            if (piece != null && piece.getTeamColor() == opponentColor) {
+                Collection<ChessMove> moves = piece.pieceMoves(board, position);
+                for (ChessMove move : moves) {
+                    if (move.getEndPosition().equals(kingPosition)) {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    return false;
 }
 
 /**
@@ -211,6 +227,23 @@ public ChessBoard getBoard() {
             }
         }
         return null;
+    }
+
+    private boolean hasAnyValidMoves(TeamColor teamColor) {
+        for(int row = 1; row <= 8; row++) {
+            for(int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(position);
+
+                if(piece != null && piece.getTeamColor() == teamColor) {
+                    Collection<ChessMove> moves = validMoves(position);
+                    if(moves != null && !moves.isEmpty()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
 
