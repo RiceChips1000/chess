@@ -75,7 +75,7 @@ public class ChessPiece {
             }
             // just normal pawn one foward
             int nextRow = row + direction;
-            if(nextRow >= 1 && nextRow <=8) {
+            if(isValidPosition(nextRow, col)) {
                 ChessPosition forwardOne = new ChessPosition(nextRow, col);
                 if(board.getPiece(forwardOne) == null) {
                     if(nextRow == promotionRow) {
@@ -98,7 +98,7 @@ public class ChessPiece {
             for(int i = 0; i < diagonalCapture.length; i++) {
                 int newCapturePosCol = col + diagonalCapture[i];
                 int newCapturePosRow = row + direction;
-                if(newCapturePosRow >= 1 && newCapturePosRow <= 8 && newCapturePosCol >= 1 && newCapturePosCol <= 8) {
+                if(isValidPosition(newCapturePosRow, newCapturePosCol)) {
                     ChessPosition targetPos = new ChessPosition(newCapturePosRow, newCapturePosCol);
                     ChessPiece target = board.getPiece(targetPos);
                     if(target != null && target.getTeamColor() != pieceColor){
@@ -123,15 +123,7 @@ public class ChessPiece {
             for(int i = 0; i < jumps.length; i++) {
                 int newRow = row + jumps[i][0];
                 int newCol = col + jumps[i][1];
-
-                if(newRow >= 1 && newRow<= 8 && newCol >= 1 && newCol <= 8) {
-                    ChessPosition pos = new ChessPosition(newRow, newCol);
-                    ChessPiece target = board.getPiece(pos);
-                    if(target == null || target.getTeamColor() != pieceColor) {
-                        moves.add(new ChessMove(myPosition, pos, null));
-                    }
-                }
-
+                addMoveIfValid(board, myPosition, newRow, newCol, moves);
             }
         }
         if(type == PieceType.ROOK) {
@@ -157,13 +149,7 @@ public class ChessPiece {
                     if(dirRow == 0 && dirColKing == 0) {continue;}
                     int newRow = row + dirRow;
                     int newCol = col + dirColKing;
-                    if(newRow >= 1 && newRow<= 8 && newCol >= 1 && newCol <= 8) {
-                        ChessPosition pos = new ChessPosition(newRow, newCol);
-                        ChessPiece target = board.getPiece(pos);
-                        if(target == null || target.getTeamColor() != pieceColor) {
-                            moves.add(new ChessMove(myPosition, pos, null));
-                        }
-                    }
+                    addMoveIfValid(board, myPosition, newRow, newCol, moves);
                 }
             }
         }
@@ -176,6 +162,21 @@ public class ChessPiece {
         //Will have a array of array type ish of thing to run through so that sliding moves and other moves can be easily made for each peice
 
     }
+
+    private boolean isValidPosition(int row, int col) {
+        return row >= 1 && row <= 8 && col >= 1 && col <= 8;
+    }
+
+    private void addMoveIfValid(ChessBoard board, ChessPosition myPosition, int newRow, int newCol, List<ChessMove> moves) {
+        if(isValidPosition(newRow, newCol)) {
+            ChessPosition pos = new ChessPosition(newRow, newCol);
+            ChessPiece target = board.getPiece(pos);
+            if(target == null || target.getTeamColor() != pieceColor) {
+                moves.add(new ChessMove(myPosition, pos, null));
+            }
+        }
+    }
+
     private void addSlidingMoves(ChessBoard board, ChessPosition start, int[][] directions, List<ChessMove> moves){
         int row = start.getRow();
         int col = start.getColumn();
@@ -186,7 +187,7 @@ public class ChessPiece {
 
             int newRow = row + directionRow;
             int newCol = col + directionCol;
-            while(newRow >= 1 && newRow <=8 && newCol >= 1 && newCol <= 8) {
+            while(isValidPosition(newRow, newCol)) {
                 ChessPosition pos = new ChessPosition(newRow, newCol);
                 ChessPiece target = board.getPiece(pos);
                 if (target == null) {
