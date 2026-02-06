@@ -74,7 +74,6 @@ public void makeMove(ChessMove move) throws InvalidMoveException {
         throw new InvalidMoveException("No piece at start position");
     }
 
-    // Check if it's the correct team's turn
     if(piece.getTeamColor() != teamTurn) {
         throw new InvalidMoveException("Not your turn");
     }
@@ -85,7 +84,7 @@ public void makeMove(ChessMove move) throws InvalidMoveException {
         throw new InvalidMoveException("Invalid move");
     }
 
-    // Execute the move
+
     board.addPiece(start, null); // Remove piece from start
 
     // Handle pawn promotion
@@ -147,6 +146,21 @@ public void setBoard(ChessBoard board) {
 public ChessBoard getBoard() {
     throw new RuntimeException("Not implemented");
 }
+    private ChessPosition findKing(TeamColor teamColor) {
+        for(int row = 1; row <= 8; row++) {
+            for(int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(position);
+
+                if(piece != null &&
+                        piece.getTeamColor() == teamColor &&
+                        piece.getPieceType() == ChessPiece.PieceType.KING) {
+                    return position;
+                }
+            }
+        }
+        return null;
+    }
 }
 
 
