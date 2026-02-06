@@ -135,7 +135,7 @@ public boolean isInStalemate(TeamColor teamColor) {
  * @param board the new board to use
  */
 public void setBoard(ChessBoard board) {
-    throw new RuntimeException("Not implemented");
+    this.board = board;
 }
 
     private ChessBoard copyBoard(ChessBoard original) {
