@@ -63,7 +63,40 @@ public Collection<ChessMove> validMoves(ChessPosition startPosition) {
  * @throws InvalidMoveException if move is invalid
  */
 public void makeMove(ChessMove move) throws InvalidMoveException {
-    throw new RuntimeException("Not implemented");
+    ChessPosition start = move.getStartPosition();
+    ChessPosition end = move.getEndPosition();
+
+    ChessPiece piece = board.getPiece(start);
+
+
+
+    if(piece == null) {
+        throw new InvalidMoveException("No piece at start position");
+    }
+
+    // Check if it's the correct team's turn
+    if(piece.getTeamColor() != teamTurn) {
+        throw new InvalidMoveException("Not your turn");
+    }
+
+    // Check if the move is valid
+    Collection<ChessMove> valid = validMoves(start);
+    if(valid == null || !valid.contains(move)) {
+        throw new InvalidMoveException("Invalid move");
+    }
+
+    // Execute the move
+    board.addPiece(start, null); // Remove piece from start
+
+    // Handle pawn promotion
+    if(move.getPromotionPiece() != null) {
+        board.addPiece(end, new ChessPiece(piece.getTeamColor(), move.getPromotionPiece()));
+    }   else {
+        board.addPiece(end, piece);
+    }
+
+
+    teamTurn = (teamTurn == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE; // should be switching the teams
 }
 
 /**
@@ -115,3 +148,6 @@ public ChessBoard getBoard() {
     throw new RuntimeException("Not implemented");
 }
 }
+
+
+
