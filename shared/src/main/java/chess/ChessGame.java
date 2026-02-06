@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -53,7 +54,17 @@ public Collection<ChessMove> validMoves(ChessPosition startPosition) {
     if(piece == null) {
         return null;
     }
-    return piece.pieceMoves(board, startPosition);
+
+    Collection<ChessMove> possibleMoves = piece.pieceMoves(board, startPosition);
+    Collection<ChessMove> validMovesList = new ArrayList<>();
+
+    for(ChessMove move : possibleMoves) {
+        if(!wouldLeaveKingInCheck(move, piece.getTeamColor())) {
+            validMovesList.add(move);
+        }
+    }
+
+    return validMovesList;
 }
 
 /**
