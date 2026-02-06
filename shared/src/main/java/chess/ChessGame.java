@@ -172,7 +172,24 @@ public ChessBoard getBoard() {
         ChessPiece movingPiece = board.getPiece(start);
 
 
-        return null;
+        ChessBoard boardCopy = copyBoard(board);
+
+        ChessBoard originalBoard = this.board;
+        this.board = boardCopy;
+
+        board.addPiece(start, null);
+        if(move.getPromotionPiece() != null) {
+            board.addPiece(end, new ChessPiece(teamColor, move.getPromotionPiece()));
+        } else {
+            board.addPiece(end, movingPiece);
+        }
+
+        boolean inCheck = isInCheck(teamColor);
+
+
+        this.board = originalBoard;
+
+        return inCheck;
     }
 
 
