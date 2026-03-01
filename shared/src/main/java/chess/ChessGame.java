@@ -116,23 +116,33 @@ public void makeMove(ChessMove move) throws InvalidMoveException {
  * @return True if the specified team is in check
  */
 public boolean isInCheck(TeamColor teamColor) {
+
     ChessPosition kingPosition = findKing(teamColor);
     if (kingPosition == null) {
         return false;
     }
-    TeamColor opponentColor = (teamColor == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
+
+    TeamColor opponentColor =
+            (teamColor == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
 
     for (int row = 1; row <= 8; row++) {
         for (int col = 1; col <= 8; col++) {
+
             ChessPosition position = new ChessPosition(row, col);
+
             ChessPiece piece = board.getPiece(position);
 
-            if (piece != null && piece.getTeamColor() == opponentColor) {
-                Collection<ChessMove> moves = piece.pieceMoves(board, position);
-                for (ChessMove move : moves) {
-                    if (move.getEndPosition().equals(kingPosition)) {
-                        return true;
-                    }
+            if (piece == null || piece.getTeamColor() != opponentColor) {
+                continue;
+            }
+
+
+            Collection<ChessMove> moves =
+                    piece.pieceMoves(board, position);
+
+            for (ChessMove move : moves) {
+                if (move.getEndPosition().equals(kingPosition)) {
+                    return true;
                 }
             }
         }
