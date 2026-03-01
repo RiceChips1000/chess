@@ -16,8 +16,12 @@ public class Server {
 
 
 
-    public Server run(int port) {
+    public int run(int port) {
         httpHandler.start(port);
-        return this;
+        return httpHandler.port();
+    }
+
+    public void stop() {
+        httpHandler.stop();
     }
 }
