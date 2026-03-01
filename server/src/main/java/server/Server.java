@@ -1,8 +1,6 @@
 package server;
 import io.javalin.Javalin;
 
-import java.util.Map;
-
 public class Server {
 
     private final Javalin httpHandler;
