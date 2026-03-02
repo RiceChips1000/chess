@@ -209,6 +209,18 @@ public class Server {
     }
 
 
+    private void handleAuthError(Context ctx, Gson gson, DataAccessException e) {
+        if (e.getMessage().equals("unauthorized")) {
+            ctx.status(401);
+            ctx.result(gson.toJson(Map.of("message", "Error: unauthorized")));
+        } else {
+            
+            ctx.status(500);
+            ctx.result(gson.toJson(Map.of("message", "Error: " + e.getMessage())));
+        }
+    }
+
+
 
     public int run(int port) {
         httpHandler.start(port);
