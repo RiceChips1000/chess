@@ -128,5 +128,17 @@ public class GameServiceTests {
         assertThrows(DataAccessException.class, () ->
             gameService.joinGame(reg.authToken(), "WHITE", null));
     }
+
+
+    @Test
+    void joinGameNegativeMissingAuthToken() throws DataAccessException {
+        AuthData reg = userService.register(new UserData("joiner5", "pw", "j5@j.com"));
+
+        int id = gameService.createGame(reg.authToken(), "game5");  
+
+        assertThrows(DataAccessException.class, () ->
+            gameService.joinGame("", "WHITE", id));  
+
+    }
 }
 
