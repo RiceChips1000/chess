@@ -15,6 +15,7 @@ public class MemoryDataAccess implements DataAccess {
 
     private HashMap<String, AuthData> auths = new HashMap<>();  
     private HashMap<Integer, GameData> games = new HashMap<>();  
+    private int nextGameId = 1;
 
 
     @Override
@@ -62,6 +63,19 @@ public class MemoryDataAccess implements DataAccess {
     @Override
     public List<GameData> listGames() throws DataAccessException {
         return new ArrayList<>(games.values());
+    }
+
+
+    @Override
+    public int createGame(GameData game) throws DataAccessException {
+        int id = nextGameId;
+        nextGameId = nextGameId + 1;
+        //I wish everything was this easy
+
+        GameData withId = new GameData(id, game.whiteUsername(), game.blackUsername(), game.gameName(), game.game());
+        games.put(id, withId);
+
+        return id;
     }
 
 }

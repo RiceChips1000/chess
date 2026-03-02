@@ -44,5 +44,24 @@ public class GameServiceTests {
         assertThrows(DataAccessException.class, () ->
             gameService.listGames("badTokenThing"));
     }
+
+
+    @Test
+    void createGamePositive() throws DataAccessException {
+        AuthData reg = userService.register(new UserData("maker", "pw", "m@m.com"));
+
+        int id = gameService.createGame(reg.authToken(), "my cool game made by the goat");
+        assertTrue(id > 0);
+    }
+
+
+
+    @Test
+    void createGameNegativeBadRequest() throws DataAccessException {
+        AuthData reg = userService.register(new UserData("maker2", "pw", "m2@m.com"));
+        assertThrows(DataAccessException.class, () ->
+            gameService.createGame(reg.authToken(), null));
+
+    }
 }
 
