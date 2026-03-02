@@ -9,6 +9,7 @@ import dataaccess.DataAccess;
 import service.UserService;
 import model.UserData;
 import model.AuthData;
+import model.LoginRequest;
 import java.util.Map;
 
 public class Server {
@@ -25,6 +26,7 @@ public class Server {
         httpHandler = Javalin.create(config -> config.staticFiles.add("web"));
 
         httpHandler.post("/user", this::handleRegister);
+        httpHandler.post("/session", this::handleLogin);
         httpHandler.delete("/db", this::handleClear);
     }
 
@@ -52,6 +54,29 @@ public class Server {
             }
         }
     }
+
+
+    private void handleLogin(Context ctx) {
+        Gson gson = new Gson();
+        LoginRequest req = gson.fromJson(ctx.body(), LoginRequest.class);
+        try {
+            AuthData result = userService.login(req);
+            ctx.status(200);
+            ctx.result(gson.toJson(result));
+        } catch (DataAccessException e) {
+            if (e.getMessage().equals("bad request")) {
+                ctx.status(400);
+                ctx.result(gson.toJson(Map.of("message", "Error: bad request")));
+            } else if (e.getMessage().equals("unauthorized")) {
+                ctx.status(401);
+                ctx.result(gson.toJson(Map.of("message", "Error: unauthorized")));
+            } else {
+                ctx.status(500);
+                ctx.result(gson.toJson(Map.of("message", "Error: " + e.getMessage())));
+            }
+        }
+    }
+
 
     private void handleClear(Context ctx) {
         try {
