@@ -114,13 +114,7 @@ public class Server {
             ctx.status(200);
             ctx.result("{}");
         } catch (DataAccessException e) {
-            if (e.getMessage().equals("unauthorized")) {
-                ctx.status(401);
-                ctx.result(gson.toJson(Map.of("message", "Error: unauthorized")));
-            } else {
-                ctx.status(500);
-                ctx.result(gson.toJson(Map.of("message", "Error: " + e.getMessage())));
-            }
+            handleAuthError(ctx, gson, e);  
         }
     }
 
