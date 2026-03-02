@@ -15,6 +15,7 @@ import model.ListGamesResult;
 import model.GameData;
 import model.CreateGameRequest;
 import model.CreateGameResult;
+import model.JoinGameRequest;
 import java.util.Map;
 import java.util.List;
 
@@ -36,6 +37,7 @@ public class Server {
         httpHandler.post("/user", this::handleRegister);
         httpHandler.post("/session", this::handleLogin);
         httpHandler.post("/game", this::handleCreateGame);
+        httpHandler.put("/game", this::handleJoinGame);
         httpHandler.delete("/session", this::handleLogout);
         httpHandler.get("/game", this::handleListGames);
         
@@ -169,6 +171,40 @@ public class Server {
                 ctx.result(gson.toJson(Map.of("message", "Error: " + e.getMessage())));
             }
 
+        }
+    }
+
+
+    private void handleJoinGame(Context ctx) {
+        Gson gson = new Gson();
+        String authToken = ctx.header("authorization");
+
+        JoinGameRequest req = gson.fromJson(ctx.body(), JoinGameRequest.class);
+
+        try {
+            gameService.joinGame(authToken, req.playerColor(), req.gameID());
+
+            ctx.status(200);
+            ctx.result("{}");
+            //then catch ye
+        } catch (DataAccessException e) {
+            if (e.getMessage().equals("bad request")) {
+
+                ctx.status(400);
+                ctx.result(gson.toJson(Map.of("message", "Error: bad request")));
+            } else if (e.getMessage().equals("unauthorized"))       {
+                ctx.status(401);
+
+                ctx.result(gson.toJson(Map.of("message", "Error: unauthorized")));
+            } else if (e.getMessage().equals("already taken")) {
+                ctx.status(403);
+
+                ctx.result(gson.toJson(Map.of("message", "Error: already taken")));
+            } else {
+                ctx.status(500);
+
+                ctx.result(gson.toJson(Map.of("message", "Error: " + e.getMessage())));
+            }
         }
     }
 
