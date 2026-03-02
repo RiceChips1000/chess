@@ -27,6 +27,8 @@ public class Server {
 
         httpHandler.post("/user", this::handleRegister);
         httpHandler.post("/session", this::handleLogin);
+        httpHandler.delete("/session", this::handleLogout);
+        
         httpHandler.delete("/db", this::handleClear);
     }
 
@@ -87,6 +89,26 @@ public class Server {
             ctx.status(500);
             Gson gson = new Gson();
             ctx.result(gson.toJson(Map.of("message", "Error: " + e.getMessage())));
+        }
+    }
+
+
+    private void handleLogout(Context ctx) {
+        Gson gson = new Gson();
+        String authToken = ctx.header("authorization");
+
+        try {
+            userService.logout(authToken);
+            ctx.status(200);
+            ctx.result("{}");
+        } catch (DataAccessException e) {
+            if (e.getMessage().equals("unauthorized")) {
+                ctx.status(401);
+                ctx.result(gson.toJson(Map.of("message", "Error: unauthorized")));
+            } else {
+                ctx.status(500);
+                ctx.result(gson.toJson(Map.of("message", "Error: " + e.getMessage())));
+            }
         }
     }
 

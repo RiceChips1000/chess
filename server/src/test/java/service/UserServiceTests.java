@@ -114,4 +114,23 @@ public class UserServiceTests {
         assertThrows(DataAccessException.class, () ->
             userService.login(new LoginRequest("", "p")));
     }
+
+
+    @Test
+    void logoutPositive() throws DataAccessException {
+        AuthData reg = userService.register(new UserData("logoutUser", "pw", "l@mail.com"));
+        AuthData login = userService.login(new LoginRequest("logoutUser", "pw"));
+
+        String token = login.authToken();
+        userService.logout(token);
+
+        assertNull(((MemoryDataAccess)dataAccess).getAuth(token));
+    }
+
+
+    @Test
+    void logoutNegativeUnauthorized() {
+        assertThrows(DataAccessException.class, () ->
+            userService.logout("totally_fake_token"));
+    }
 }

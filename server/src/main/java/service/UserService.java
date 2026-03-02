@@ -81,8 +81,23 @@ public class UserService {
         String token = UUID.randomUUID().toString();
 
         AuthData authData = new AuthData(token, req.username());
-        
+
         dataAccess.createAuth(authData);
         return authData;
+    }
+
+
+    public void logout(String authToken) throws DataAccessException {  
+        if (authToken == null || authToken.isEmpty()) {
+            throw new DataAccessException("unauthorized"); 
+        }
+
+        AuthData auth = dataAccess.getAuth(authToken);
+        if (auth == null) {
+
+            throw new DataAccessException("unauthorized");
+        }
+
+        dataAccess.deleteAuth(authToken);   
     }
 }
