@@ -2,7 +2,10 @@ package dataaccess;
 
 import model.UserData;
 import model.AuthData;
+import model.GameData;
 import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 
 
@@ -11,12 +14,14 @@ public class MemoryDataAccess implements DataAccess {
     private HashMap<String, UserData> users = new HashMap<>();
 
     private HashMap<String, AuthData> auths = new HashMap<>();  
+    private HashMap<Integer, GameData> games = new HashMap<>();  
 
 
     @Override
     public void clear() throws DataAccessException {
         users.clear();
         auths.clear();
+        games.clear();
         System.out.println("Cleared all d ata");
     }   
 
@@ -51,6 +56,12 @@ public class MemoryDataAccess implements DataAccess {
     @Override
     public void deleteAuth(String authToken) throws DataAccessException {  
         auths.remove(authToken);  
+    }
+
+
+    @Override
+    public List<GameData> listGames() throws DataAccessException {
+        return new ArrayList<>(games.values());
     }
 
 }

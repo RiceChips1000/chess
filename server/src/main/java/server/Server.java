@@ -7,27 +7,34 @@ import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
 import dataaccess.DataAccess;
 import service.UserService;
+import service.GameService;
 import model.UserData;
 import model.AuthData;
 import model.LoginRequest;
+import model.ListGamesResult;
+import model.GameData;
 import java.util.Map;
+import java.util.List;
 
 public class Server {
 
     private final Javalin httpHandler;
     private final DataAccess dataAccess;
     private final UserService userService;
+    private final GameService gameService;
 
 
     public Server() {
         dataAccess = new MemoryDataAccess();
         userService = new UserService(dataAccess);
+        gameService = new GameService(dataAccess);
 
         httpHandler = Javalin.create(config -> config.staticFiles.add("web"));
 
         httpHandler.post("/user", this::handleRegister);
         httpHandler.post("/session", this::handleLogin);
         httpHandler.delete("/session", this::handleLogout);
+        httpHandler.get("/game", this::handleListGames);
         
         httpHandler.delete("/db", this::handleClear);
     }
@@ -101,6 +108,26 @@ public class Server {
             userService.logout(authToken);
             ctx.status(200);
             ctx.result("{}");
+        } catch (DataAccessException e) {
+            if (e.getMessage().equals("unauthorized")) {
+                ctx.status(401);
+                ctx.result(gson.toJson(Map.of("message", "Error: unauthorized")));
+            } else {
+                ctx.status(500);
+                ctx.result(gson.toJson(Map.of("message", "Error: " + e.getMessage())));
+            }
+        }
+    }
+
+
+    private void handleListGames(Context ctx) {
+        Gson gson = new Gson();
+        String authToken = ctx.header("authorization");
+
+        try {
+            List<GameData> games = gameService.listGames(authToken);
+            ctx.status(200);
+            ctx.result(gson.toJson(new ListGamesResult(games.toArray(new GameData[0]))));
         } catch (DataAccessException e) {
             if (e.getMessage().equals("unauthorized")) {
                 ctx.status(401);
