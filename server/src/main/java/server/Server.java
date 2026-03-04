@@ -147,6 +147,8 @@ public class Server {
             ctx.result(gson.toJson(new CreateGameResult(id)));
         } catch (DataAccessException e) {
             if (e.getMessage().equals("unauthorized")) {
+
+
                 ctx.status(401);
                 ctx.result(gson.toJson(Map.of("message", "Error: unauthorized")));
             } else if (e.getMessage().equals("bad request"))   {
@@ -157,10 +159,13 @@ public class Server {
                 ctx.status(500);
 
                 ctx.result(gson.toJson(Map.of("message", "Error: " + e.getMessage())));
+
             }
 
         }
+
     }
+
 
 
     private void handleJoinGame(Context ctx) {
