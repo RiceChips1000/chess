@@ -177,6 +177,7 @@ public class Server {
 
 
 
+    //  I need to add better error handling for edge cases here later so I dont have more weird issues again
     private void handleJoinGame(Context ctx) {
         Gson gson = new Gson();
         String authToken = ctx.header("authorization");
