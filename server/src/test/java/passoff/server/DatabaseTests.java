@@ -126,7 +126,7 @@ public class DatabaseTests {
         try {
             for (Map.Entry<String, Supplier<TestResult>> operationEntry : operations.entrySet()) {
                 String operationName = operationEntry.getKey();
-                Supplier<TestResult> operation = operation.getValue();
+                Supplier<TestResult> operation = operationEntry.getValue();
                 TestResult result = operation.get();
                 Assertions.assertEquals(500, serverFacade.getStatusCode(),
                         "Server response code was not 500 Internal Error for " + operationName);
