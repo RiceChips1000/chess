@@ -74,17 +74,21 @@ public class MySqlDataAccess implements DataAccess {
     @Override
     public void clear() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
+            try (var ps = conn.prepareStatement("SET FOREIGN_KEY_CHECKS = 0")) {
+                ps.executeUpdate();
+            }
             try (var ps1 = conn.prepareStatement("TRUNCATE TABLE auth")) {
                 ps1.executeUpdate();
             }
             try (var ps2 = conn.prepareStatement("TRUNCATE TABLE games")) {
-
                 ps2.executeUpdate();
             }
             try (var ps3 = conn.prepareStatement("TRUNCATE TABLE users")) {
                 ps3.executeUpdate();
             }
-            
+            try (var ps = conn.prepareStatement("SET FOREIGN_KEY_CHECKS = 1")) {
+                ps.executeUpdate();
+            }
         } catch (SQLException ex) { 
             throw new DataAccessException("failed to clear", ex);
         }
