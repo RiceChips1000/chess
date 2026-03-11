@@ -35,6 +35,14 @@ public class MySqlDataAccessTests {
     }
 
     @Test
+    //should be the missing test I need Unless I miscounted for the other one
+    public void clearNegative() throws DataAccessException {
+        dao.clear();
+
+        Assertions.assertDoesNotThrow(() -> dao.clear());
+    }
+
+    @Test
     public void createUserPositive() throws DataAccessException {
         dao.createUser(new UserData("bob", "pw", "b@mail.com"));
         UserData found = dao.getUser("bob");
