@@ -175,4 +175,18 @@ public class MySqlDataAccessTest {
         assertThrows(DataAccessException.class, () -> dao.updateGame(g));
     }
 
+    @Test
+    public void deleteAuthTwiceNeg() throws DataAccessException {
+        dao.createUser(new UserData("u7", "p7", "e7"));
+        AuthData a = new AuthData("token5", "u7");
+        dao.createAuth(a);
+        
+        dao.deleteAuth("token5");
+        // deleting again shouldn't crash, but auth should still be null
+        assertDoesNotThrow(() -> dao.deleteAuth("token5"));
+        assertNull(dao.getAuth("token5"));
+    }
+
+
+
 }
