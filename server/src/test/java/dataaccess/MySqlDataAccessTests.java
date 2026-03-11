@@ -156,5 +156,14 @@ public class MySqlDataAccessTests {
         dao.clear();
         Assertions.assertEquals(0, dao.listGames().size());
     }
+
+    @Test
+    public void updateGameMissingGameNegative() {
+
+        GameData missingGame = new GameData(9999, "white", "black", "missing_game", new ChessGame());
+        Assertions.assertThrows(DataAccessException.class,
+                () -> dao.updateGame(missingGame));
+
+    }
 }
 
