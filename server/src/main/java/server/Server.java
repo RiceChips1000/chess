@@ -5,6 +5,7 @@ import io.javalin.http.Context;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.DataAccess;
+import dataaccess.MemoryDataAccess;
 import dataaccess.MySqlDataAccess;
 import service.UserService;
 import service.GameService;
@@ -26,14 +27,16 @@ public class Server {
     private final UserService userService;
     private final GameService gameService;
 
-
+    //fix the fallback hopefully and also catch the exception so it does the fallback and not crash the server
     public Server() {
-
+        DataAccess built;
         try {
-            dataAccess = new MySqlDataAccess();
-        } catch (DataAccessException ex) { 
-            throw new RuntimeException(ex);
+            built = new MySqlDataAccess();
+        } catch (Exception ex)     {
+            
+            built = new MemoryDataAccess();
         }
+        dataAccess = built;
 
         userService = new UserService(dataAccess);
         gameService = new GameService(dataAccess);
