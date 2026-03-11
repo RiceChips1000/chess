@@ -9,6 +9,7 @@ import model.UserData;
 
 import model.AuthData;
 import model.LoginRequest;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.UUID;
 
@@ -43,7 +44,8 @@ public class UserService {
             throw new DataAccessException("already taken");     
         }
 
-        dataAccess.createUser(req);
+        String hashedPassword = BCrypt.hashpw(req.password(), BCrypt.gensalt());
+        dataAccess.createUser(new UserData(req.username(), hashedPassword, req.email()));
     
         String token = UUID.randomUUID().toString();  
         AuthData authData = new AuthData(token, req.username());  
@@ -74,7 +76,8 @@ public class UserService {
          {  
             throw new DataAccessException("unauthorized");
         }
-        if (!theUser.password().equals(req.password())) {
+        if (!BCrypt.checkpw(req.password(), theUser.password())) {
+            
             throw new DataAccessException("unauthorized");
 
         }
