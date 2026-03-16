@@ -4,8 +4,9 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
-import dataaccess.MemoryDataAccess;
 import dataaccess.DataAccess;
+import dataaccess.MemoryDataAccess;
+import dataaccess.MySqlDataAccess;
 import service.UserService;
 import service.GameService;
 import model.UserData;
@@ -26,9 +27,17 @@ public class Server {
     private final UserService userService;
     private final GameService gameService;
 
-
+    //fix the fallback hopefully and also catch the exception so it does the fallback and not crash the server
     public Server() {
-        dataAccess = new MemoryDataAccess();
+        DataAccess built;
+        try {
+            built = new MySqlDataAccess();
+        } catch (Exception ex)     {
+            
+            built = new MemoryDataAccess();
+        }
+        dataAccess = built;
+
         userService = new UserService(dataAccess);
         gameService = new GameService(dataAccess);
 
@@ -168,6 +177,7 @@ public class Server {
 
 
 
+    //  I need to add better error handling for edge cases here later so I dont have more weird issues again
     private void handleJoinGame(Context ctx) {
         Gson gson = new Gson();
         String authToken = ctx.header("authorization");
