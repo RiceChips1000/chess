@@ -16,4 +16,10 @@ public class ServerFacade {
     public ServerFacade(int port) {
         this.serverUrl = "http://localhost:" + port;
     }
+
+    public AuthData register(String username, String password, String email) throws Exception {
+        var path = "/user";
+        var request = new UserData(username, password, email);
+        return makeRequest("POST", path, request, AuthData.class, null);
+    }
 }
