@@ -35,19 +35,47 @@ public class ServerFacade {
 
     }
 
+    public CreateGameResult createGame(String authToken, String gameName) throws Exception    {
+        var path = "/game";
+        var request = new CreateGameRequest(gameName);
+
+        return makeRequest("POST", path, request, CreateGameResult.class, authToken);
+    }
+
+    public GameData[] listGames(String authToken) throws Exception {
+        var path = "/game";
+        var result = makeRequest("GET", path, null, ListGamesResult.class, authToken);
+        return result.games();
+
+
+    }
+
+
+    public void joinGame(String authToken, String playerColor, int gameID) throws Exception {
+        var path = "/game";
+
+        var request = new JoinGameRequest(playerColor, gameID);
+
+        makeRequest("PUT", path, request, null, authToken);
+    }
+
+
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken)
             throws Exception {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
-            http.setDoOutput(true);
 
             if (authToken != null) {
+
                 http.addRequestProperty("authorization", authToken);
             }
-
-            writeBody(request, http);
+            if (request != null)  {
+                http.setDoOutput(true);
+                //should fix because Im not supposed to send the body I have the calls the  set doOutput
+                writeBody(request, http);
+            }
             http.connect();
             throwIfNotSuccessful(http);
             return readBody(http, responseClass);
