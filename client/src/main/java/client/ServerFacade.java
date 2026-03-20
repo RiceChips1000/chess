@@ -23,6 +23,18 @@ public class ServerFacade {
         return makeRequest("POST", path, request, AuthData.class, null);
     }
 
+    public AuthData login(String username, String password) throws Exception {
+        var path = "/session";
+
+        var request = new LoginRequest(username, password);
+        return makeRequest("POST", path, request, AuthData.class, null);
+    }
+    public void logout(String authToken) throws Exception    {
+        var path = "/session";
+        makeRequest("DELETE", path, null, null, authToken);
+
+    }
+
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken)
             throws Exception {
         try {
