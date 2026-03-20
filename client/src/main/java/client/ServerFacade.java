@@ -42,6 +42,13 @@ public class ServerFacade {
         return makeRequest("POST", path, request, CreateGameResult.class, authToken);
     }
 
+    public void clear() throws Exception {
+        var path = "/db";
+
+        makeRequest("DELETE", path, null, null, null);
+    }
+
+
     public GameData[] listGames(String authToken) throws Exception {
         var path = "/game";
         var result = makeRequest("GET", path, null, ListGamesResult.class, authToken);
