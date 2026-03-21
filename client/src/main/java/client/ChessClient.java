@@ -133,11 +133,28 @@ public class ChessClient {
     }
 
     private String createGame(String[] params) throws Exception {
-        return "Not implemented yet.";
+        if (params.length < 1) {
+            return "Usage: create <NAME>";
+        }
+        String gameName = String.join(" ", params);
+        server.createGame(authToken, gameName);
+        return "Created game: " + gameName;
     }
 
     private String listGames() throws Exception {
-        return "Not implemented yet.";
+        lastGameList = server.listGames(authToken);
+        if (lastGameList.length == 0) {
+            return "No games found.";
+        }
+        var sb = new StringBuilder();
+        for (int i = 0; i < lastGameList.length; i++) {
+            GameData game = lastGameList[i];
+            String white = game.whiteUsername() != null ? game.whiteUsername() : "---";
+            String black = game.blackUsername() != null ? game.blackUsername() : "---";
+            sb.append(String.format("  %d. %s  (White: %s, Black: %s)%n",
+                    i + 1, game.gameName(), white, black));
+        }
+        return sb.toString().stripTrailing();
     }
 
     private String joinGame(String[] params) throws Exception {
