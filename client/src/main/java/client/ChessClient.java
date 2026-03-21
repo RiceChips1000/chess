@@ -158,11 +158,69 @@ public class ChessClient {
     }
 
     private String joinGame(String[] params) throws Exception {
-        return "Not implemented yet.";
+        if (params.length < 2) {
+            return "Usage: join <ID> [WHITE|BLACK]";
+        }
+
+        int gameNumber;
+        try {
+            gameNumber = Integer.parseInt(params[0]);
+        } catch (NumberFormatException e) {
+            return "Please provide a valid game number.";
+        }
+
+        if (lastGameList == null) {
+            return "Please list games first.";
+        }
+        if (gameNumber < 1 || gameNumber > lastGameList.length) {
+            return "Invalid game number. Please list games and try again.";
+        }
+
+        String color = params[1].toUpperCase();
+        if (!color.equals("WHITE") && !color.equals("BLACK")) {
+            return "Please specify WHITE or BLACK.";
+        }
+
+        int gameID = lastGameList[gameNumber - 1].gameID();
+        server.joinGame(authToken, color, gameID);
+
+        System.out.println("Joined game " + gameNumber + " as " + color + ".");
+        System.out.println();
+
+        if (color.equals("WHITE")) {
+            BoardRenderer.drawWhiteBoard();
+        } else {
+            BoardRenderer.drawBlackBoard();
+        }
+
+        return "";
     }
 
     private String observeGame(String[] params) throws Exception {
-        return "Not implemented yet.";
+        if (params.length < 1) {
+            return "Usage: observe <ID>";
+        }
+
+        int gameNumber;
+        try {
+            gameNumber = Integer.parseInt(params[0]);
+        } catch (NumberFormatException e) {
+            return "Please provide a valid game number.";
+        }
+
+        if (lastGameList == null) {
+            return "Please list games first.";
+        }
+        if (gameNumber < 1 || gameNumber > lastGameList.length) {
+            return "Invalid game number. Please list games and try again.";
+        }
+
+        System.out.println("Observing game " + gameNumber + ".");
+        System.out.println();
+
+        BoardRenderer.drawWhiteBoard();
+
+        return "";
     }
 
     private String help() {
