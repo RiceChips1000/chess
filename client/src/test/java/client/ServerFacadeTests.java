@@ -105,4 +105,36 @@ public class ServerFacadeTests {
         facade.register("player1", "password", "p1@email.com");
         assertDoesNotThrow(() -> facade.clear());
     }
+
+    // ======  NEGATIVE TESTS =====
+
+    @Test
+    void registerNegativeDuplicate() throws Exception     {
+
+        facade.register("player1", "password", "p1@email.com");
+        assertThrows(Exception.class, () ->
+                facade.register("player1", "password", "p1@email.com"));
+
+    }
+
+    @Test
+    void loginNegativeBadPassword() {
+
+        assertThrows(Exception.class, () ->
+                facade.login("nonexistent", "wrongpassword"));
+    }
+
+    @Test
+    void logoutNegativeBadToken() {
+        assertThrows(Exception.class, () ->
+                facade.logout("bad-auth-token"));
+    }
+
+    @Test
+    void createGameNegativeBadAuth() {
+        assertThrows(Exception.class, () ->
+                facade.createGame("bad-auth-token", "TestGame"));
+    }
+
+
 }
