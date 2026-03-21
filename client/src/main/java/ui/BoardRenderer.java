@@ -29,6 +29,22 @@ public class BoardRenderer {
         drawBoard(board, false);
     }
 
+    public static void drawBothBoards() {
+
+        //eziest peaziest thing ever
+        ChessGame game = new ChessGame();
+
+        ChessBoard board = game.getBoard();
+
+        System.out.println("White perspective:");
+        drawBoard(board, true);
+
+        System.out.println("Black perspective:");
+        drawBoard(board, false);
+
+    }
+
+
     private static void drawBoard(ChessBoard board, boolean whitePerspective) {
 
 
