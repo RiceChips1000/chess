@@ -60,7 +60,7 @@ public class ChessClient {
             return evalPostlogin(cmd, params);
         } else {
 
-             return evalPrelogin(cmd, params);
+            return evalPrelogin(cmd, params);
         }
     }
 
@@ -69,10 +69,28 @@ public class ChessClient {
 
             return switch (cmd) {
                 case "help" -> help();
-                 case "quit" -> "quit";
+                case "quit" -> "quit";
                 case "login" -> login(params);
 
                 case "register" -> register(params);
+                default -> "Unknown command. Type help for available commands.";
+            };
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
+    private String evalPostlogin(String cmd, String[] params) {
+        try {
+
+            return switch (cmd) {
+                case "help" -> help();
+                case "quit" -> "quit";
+                case "logout" -> logout();
+                case "create" -> createGame(params);
+                case "list" -> listGames();
+                case "join" -> joinGame(params);
+                case "observe" -> observeGame(params);
                 default -> "Unknown command. Type help for available commands.";
             };
         } catch (Exception e) {
@@ -104,6 +122,30 @@ public class ChessClient {
         loggedIn = true;
 
         return "Registered and logged in as " + username + ".";
+    }
+
+    private String logout() throws Exception {
+        server.logout(authToken);
+        authToken = null;
+        username = null;
+        loggedIn = false;
+        return "Logged out successfully.";
+    }
+
+    private String createGame(String[] params) throws Exception {
+        return "Not implemented yet.";
+    }
+
+    private String listGames() throws Exception {
+        return "Not implemented yet.";
+    }
+
+    private String joinGame(String[] params) throws Exception {
+        return "Not implemented yet.";
+    }
+
+    private String observeGame(String[] params) throws Exception {
+        return "Not implemented yet.";
     }
 
     private String help() {
