@@ -106,4 +106,35 @@ public class ChessClient {
         return "Registered and logged in as " + username + ".";
     }
 
+    private String help() {
+        if (loggedIn) {
+
+            return """
+                    create <NAME> - create a game
+                    list - list games
+                    join <ID> [WHITE|BLACK] - play a game
+                    observe <ID> - observe a game
+                    logout - log out
+                    quit - exit the program
+                    help - display available commands""";
+
+        }
+        return """
+                register <USERNAME> <PASSWORD> <EMAIL> - to create an account
+                login <USERNAME> <PASSWORD> - to play chess
+                quit - exit the program
+                help - display available commands""";
+
+
+    }
+
+    private void printPrompt() {
+        if (loggedIn) {
+
+            System.out.print("[" + username + "] >>> ");
+        } else {
+
+            System.out.print("[LOGGED_OUT] >>> ");
+        }
+    }
 }
