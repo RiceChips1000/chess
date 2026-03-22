@@ -161,5 +161,5 @@ public class ServerFacadeTests {
                 facade.joinGame(authData.authToken(), "WHITE", 99999));
     }
 
-
+//should be good for tests
 }
