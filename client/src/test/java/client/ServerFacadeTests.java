@@ -106,6 +106,14 @@ public class ServerFacadeTests {
         assertDoesNotThrow(() -> facade.clear());
     }
 
+    @Test
+    void clearNegativeInvalidatesAuth() throws Exception {
+        var authData = facade.register("player1", "password", "p1@email.com");
+        facade.clear();
+
+        assertThrows(Exception.class, () -> facade.listGames(authData.authToken()));
+    }
+
     // ======  NEGATIVE TESTS =====
 
     @Test
