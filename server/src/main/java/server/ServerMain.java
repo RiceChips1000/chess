@@ -9,6 +9,7 @@ public class ServerMain {
 
         Server server = new Server();
         server.run(8080);
+        //fix json string output
 
     }
 }

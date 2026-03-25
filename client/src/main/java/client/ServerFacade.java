@@ -109,8 +109,25 @@ public class ServerFacade {
         if (!isSuccessful(status)) {
             try (InputStream respErr = http.getErrorStream()) {
                 if (respErr != null) {
-                    throw new Exception(new String(respErr.readAllBytes()));
+                    //should fix me sending the raw data and now send the super beatiful clean data
+                    String body = new String(respErr.readAllBytes());
+                    try {
+
+                        var json = new Gson().fromJson(body, java.util.Map.class);
+
+                        if (json != null && json.containsKey("message"))     {
+                            String msg = json.get("message").toString();
+
+                            if (msg.startsWith("Error: ")) {
+                                msg = msg.substring(7);
+                            }
+                            throw new Exception(msg);   
+                        }
+                    } catch (com.google.gson.JsonSyntaxException ignored) {
+                    }
+                    throw new Exception(body);
                 }
+                // should be good now
             }
             throw new Exception("failure: " + status);
         }
