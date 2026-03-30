@@ -6,6 +6,6 @@ public class ClientMain {
         ChessClient client = new ChessClient("http://localhost:8080");
         client.run();
     }
-    //phase 6 yaya
+    //phase 6 yaeya
 
 }
