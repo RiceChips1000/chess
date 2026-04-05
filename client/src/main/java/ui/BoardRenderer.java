@@ -2,14 +2,19 @@ package ui;
 
 import chess.*;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import static ui.EscapeSequences.*;
 
 public class BoardRenderer {
 
     private static final String LIGHT_SQUARE = SET_BG_COLOR_WHITE;
     private static final String DARK_SQUARE = SET_BG_COLOR_DARK_GREEN;
+    private static final String HIGHLIGHT_SQUARE = SET_BG_COLOR_YELLOW;
+    private static final String HIGHLIGHT_SOURCE = SET_BG_COLOR_GREEN;
     private static final String BORDER_BG = SET_BG_COLOR_LIGHT_GREY;
-
     private static final String BORDER_TEXT = SET_TEXT_COLOR_BLACK;
     private static final String WHITE_PIECE_COLOR = SET_TEXT_COLOR_RED;
     private static final String BLACK_PIECE_COLOR = SET_TEXT_COLOR_BLUE;
@@ -17,21 +22,25 @@ public class BoardRenderer {
 
     public static void drawWhiteBoard() {
         ChessGame game = new ChessGame();
-        ChessBoard board = game.getBoard();
 
-        drawBoard(board, true);
+        drawBoard(game.getBoard(), true, null);
     }
 
-    public static void drawBlackBoard()        {
+    public static void drawBlackBoard() {
         ChessGame game = new ChessGame();
-
-        ChessBoard board = game.getBoard();
-        drawBoard(board, false);
+        drawBoard(game.getBoard(), false, null);
     }
 
+    public static void drawBoard(ChessBoard board, boolean whitePerspective, Collection<ChessMove> highlights) {
+        Set<ChessPosition> highlightedSquares = new HashSet<>();
+        ChessPosition sourceSquare = null;
+        if (highlights != null && !highlights.isEmpty()) {
+            for (ChessMove move : highlights)   {
 
-    private static void drawBoard(ChessBoard board, boolean whitePerspective) {
-
+                highlightedSquares.add(move.getEndPosition());
+                sourceSquare = move.getStartPosition();
+            }
+        }
 
         System.out.println();
         drawColumnHeaders(whitePerspective);
@@ -41,12 +50,10 @@ public class BoardRenderer {
         int step = whitePerspective ? -1 : 1;
 
         for (int row = startRow; whitePerspective ? row >= endRow : row <= endRow; row += step) {
-            drawRow(board, row, whitePerspective);
-
+            drawRow(board, row, whitePerspective, highlightedSquares, sourceSquare);
         }
 
         drawColumnHeaders(whitePerspective);
-
         System.out.println();
     }
 
@@ -56,38 +63,42 @@ public class BoardRenderer {
 
         if (whitePerspective) {
             for (char c = 'a'; c <= 'h'; c++) {
-
                 System.out.print(" " + c + " ");
             }
         } else {
-
             for (char c = 'h'; c >= 'a'; c--) {
                 System.out.print(" " + c + " ");
             }
         }
 
         System.out.print(EMPTY);
-
         System.out.println(RESET);
     }
 
-    private static void drawRow(ChessBoard board, int row, boolean whitePerspective) {
+    private static void drawRow(ChessBoard board, int row, boolean whitePerspective,
+                                Set<ChessPosition> highlights, ChessPosition source) {
         System.out.print(BORDER_BG + BORDER_TEXT + " " + row + " ");
 
         int startCol = whitePerspective ? 1 : 8;
-
         int endCol = whitePerspective ? 8 : 1;
         int step = whitePerspective ? 1 : -1;
 
         for (int col = startCol; whitePerspective ? col <= endCol : col >= endCol; col += step) {
-            boolean isLightSquare = (row + col) % 2 != 0;
-            String bgColor = isLightSquare ? LIGHT_SQUARE : DARK_SQUARE;
-            System.out.print(bgColor);
-
             ChessPosition pos = new ChessPosition(row, col);
 
-            ChessPiece piece = board.getPiece(pos);
+            String bgColor;
+            if (source != null && pos.equals(source)) {
+                bgColor = HIGHLIGHT_SOURCE;
 
+            } else if (highlights.contains(pos)) {
+                bgColor = HIGHLIGHT_SQUARE;
+            } else {
+                boolean isLightSquare = (row + col) % 2 != 0;
+                bgColor = isLightSquare ? LIGHT_SQUARE : DARK_SQUARE;
+            }
+            System.out.print(bgColor);
+
+            ChessPiece piece = board.getPiece(pos);
             if (piece == null) {
                 System.out.print(EMPTY);
             } else {
