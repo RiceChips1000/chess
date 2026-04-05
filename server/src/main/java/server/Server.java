@@ -26,6 +26,7 @@ public class Server {
     private final DataAccess dataAccess;
     private final UserService userService;
     private final GameService gameService;
+    private final WebSocketHandler webSocketHandler;
 
     //fix the fallback hopefully and also catch the exception so it does the fallback and not crash the server
     public Server() {
@@ -40,8 +41,20 @@ public class Server {
 
         userService = new UserService(dataAccess);
         gameService = new GameService(dataAccess);
+        webSocketHandler = new WebSocketHandler(dataAccess);
 
-        httpHandler = Javalin.create(config -> config.staticFiles.add("web"));
+        httpHandler = Javalin.create(config -> {
+            config.staticFiles.add("web");
+
+            config.jetty.modifyWebSocketServletFactory(ws -> {
+                ws.setIdleTimeout(java.time.Duration.ofMinutes(5));
+            });
+        });
+
+        httpHandler.ws("/ws", ws -> {
+            ws.onMessage((ctx) -> webSocketHandler.onMessage(ctx.session(), ctx.message()));
+        });
+
 
         httpHandler.post("/user", this::handleRegister);
         httpHandler.post("/session", this::handleLogin);
