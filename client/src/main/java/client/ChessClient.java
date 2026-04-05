@@ -1,7 +1,7 @@
 package client;
 
+import chess.ChessGame;
 import model.*;
-import ui.BoardRenderer;
 
 import java.util.Arrays;
 import java.util.Scanner;
@@ -15,9 +15,11 @@ public class ChessClient {
     private boolean loggedIn = false;
 
     private GameData[] lastGameList = null;
+    private final String serverUrl;
+
 
     public ChessClient(String serverUrl) {
-
+        this.serverUrl = serverUrl;
         server = new ServerFacade(serverUrl);
     }
 
@@ -184,16 +186,13 @@ public class ChessClient {
         int gameID = lastGameList[gameNumber - 1].gameID();
         server.joinGame(authToken, color, gameID);
 
-        System.out.println("Joined game " + gameNumber + " as " + color + ".");
-        System.out.println();
+        ChessGame.TeamColor teamColor = color.equals("WHITE")
+                ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
 
-        if (color.equals("WHITE")) {
-            BoardRenderer.drawWhiteBoard();
-        } else {
-            BoardRenderer.drawBlackBoard();
-        }
+        GameplayUI gameplayUI = new GameplayUI(serverUrl, authToken, gameID, teamColor);
+        gameplayUI.run();
 
-        return "";
+        return "Returned to main menu.";
     }
 
     private String observeGame(String[] params) throws Exception {
@@ -215,12 +214,12 @@ public class ChessClient {
             return "Invalid game number. Please list games and try again.";
         }
 
-        System.out.println("Observing game " + gameNumber + ".");
-        System.out.println();
+        int gameID = lastGameList[gameNumber - 1].gameID();
 
-        BoardRenderer.drawWhiteBoard();
+        GameplayUI gameplayUI = new GameplayUI(serverUrl, authToken, gameID, null);
+        gameplayUI.run();
 
-        return "";
+        return "Returned to main menu.";
     }
 
     private String help() {
