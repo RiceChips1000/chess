@@ -45,15 +45,15 @@ public class Server {
 
         httpHandler = Javalin.create(config -> {
             config.staticFiles.add("web");
-
             config.jetty.modifyWebSocketServletFactory(ws -> {
                 ws.setIdleTimeout(java.time.Duration.ofMinutes(5));
             });
         });
 
         httpHandler.ws("/ws", ws -> {
-            ws.onMessage((ctx) -> webSocketHandler.onMessage(ctx.session(), ctx.message()));
+            ws.onMessage((ctx) -> webSocketHandler.onMessage(ctx.session, ctx.message()));
         });
+
 
 
         httpHandler.post("/user", this::handleRegister);
