@@ -244,6 +244,12 @@ public class GameplayUI implements WebSocketCommunicator.ServerMessageObserver  
     }
 
     private void printPrompt() {
-        System.out.print("[GAME] >>> ");
+
+        if (currentGame != null && currentGame.getTeamTurn() != null) {
+
+            System.out.print("[GAME - " + currentGame.getTeamTurn() + "'s turn] >>> ");
+        } else    {
+            System.out.print("[GAME] >>> ");
+        }
     }
 }
