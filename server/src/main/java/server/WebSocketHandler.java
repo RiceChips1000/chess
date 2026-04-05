@@ -195,6 +195,102 @@ public class WebSocketHandler {
         }
     }
 
+    private void handleLeave(Session session, UserGameCommand command) throws IOException      {
+
+        try {
+
+            AuthData auth = dataAccess.getAuth(command.getAuthToken());
+            if (auth == null) {
+
+                sendError(session, "Error: unauthorized");
+                return;
+            }
+
+
+
+            GameData gameData = dataAccess.getGame(command.getGameID());
+            String username = auth.username();
+
+
+            if (gameData != null) {
+
+                String white = gameData.whiteUsername();
+
+                String black = gameData.blackUsername();
+                if (username.equals(white)) {
+                    white = null;
+                } else if (username.equals(black)) {
+                    black = null;
+                }
+                GameData updated = new GameData(gameData.gameID(), white, black,
+                        gameData.gameName(), gameData.game());
+
+                dataAccess.updateGame(updated);
+            }
+
+            ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+            notification.setMessage(username + " left the game");
+            connectionManager.broadcast(command.getGameID(), session, gson.toJson(notification));
+
+            connectionManager.remove(session);
+
+        } catch (DataAccessException e) {
+            sendError(session, "Error: " + e.getMessage());
+        }
+    }
+
+    private void handleResign(Session session, UserGameCommand command) throws IOException {
+
+
+        try {
+            AuthData auth = dataAccess.getAuth(command.getAuthToken());
+
+            if (auth == null) {
+                sendError(session, "Error: unauthorized");
+                return;
+            }
+
+            GameData gameData = dataAccess.getGame(command.getGameID());
+            if (gameData == null)      {
+                sendError(session, "Error: game not found");
+                return;
+
+            }
+
+            String username = auth.username();
+            ChessGame game = gameData.game();
+
+
+            if (!username.equals(gameData.whiteUsername()) && !username.equals(gameData.blackUsername())) {
+                sendError(session, "Error: observers cannot resign");
+
+                return;
+            }
+
+            if (game.getTeamTurn() == null) {
+
+                sendError(session, "Error: game is already over");
+                return;
+            }
+
+
+            game.setTeamTurn(null);
+
+            GameData updated = new GameData(gameData.gameID(), gameData.whiteUsername(),
+                    gameData.blackUsername(), gameData.gameName(), game);
+            dataAccess.updateGame(updated);
+
+            ServerMessage notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+            notification.setMessage(username + " resigned. Game over.");
+
+            connectionManager.broadcastToAll(command.getGameID(), gson.toJson(notification));
+
+        } catch (DataAccessException e) {
+            sendError(session, "Error: " + e.getMessage());
+        }
+    }
+
+
     private String posToString(chess.ChessPosition pos) {
         char col = (char) ('a' + pos.getColumn() - 1);
         return "" + col + pos.getRow();
