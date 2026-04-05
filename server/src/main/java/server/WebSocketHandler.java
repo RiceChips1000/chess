@@ -93,6 +93,7 @@ public class WebSocketHandler {
         ServerMessage error = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
 
         error.setErrorMessage(errorMsg);
+
         session.getRemote().sendString(gson.toJson(error));
     }
 }
