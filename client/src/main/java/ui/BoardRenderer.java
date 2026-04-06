@@ -59,7 +59,7 @@ public class BoardRenderer {
 
     private static void drawColumnHeaders(boolean whitePerspective) {
         System.out.print(BORDER_BG + BORDER_TEXT);
-        System.out.print(EMPTY);
+        System.out.print("   ");
 
         if (whitePerspective) {
             for (char c = 'a'; c <= 'h'; c++) {
@@ -71,7 +71,7 @@ public class BoardRenderer {
             }
         }
 
-        System.out.print(EMPTY);
+        System.out.print("   ");
         System.out.println(RESET);
     }
 
@@ -100,7 +100,7 @@ public class BoardRenderer {
 
             ChessPiece piece = board.getPiece(pos);
             if (piece == null) {
-                System.out.print(EMPTY);
+                System.out.print("   ");
             } else {
                 System.out.print(getPieceString(piece));
             }
@@ -114,18 +114,14 @@ public class BoardRenderer {
         String textColor = piece.getTeamColor() == ChessGame.TeamColor.WHITE
                 ? WHITE_PIECE_COLOR : BLACK_PIECE_COLOR;
 
-        return textColor + switch (piece.getPieceType()) {
-            case KING -> piece.getTeamColor() == ChessGame.TeamColor.WHITE ? WHITE_KING : BLACK_KING;
-
-            case QUEEN -> piece.getTeamColor() == ChessGame.TeamColor.WHITE ? WHITE_QUEEN : BLACK_QUEEN;
-
-            case BISHOP -> piece.getTeamColor() == ChessGame.TeamColor.WHITE ? WHITE_BISHOP : BLACK_BISHOP;
-
-            case KNIGHT -> piece.getTeamColor() == ChessGame.TeamColor.WHITE ? WHITE_KNIGHT : BLACK_KNIGHT;
-
-            case ROOK -> piece.getTeamColor() == ChessGame.TeamColor.WHITE ? WHITE_ROOK : BLACK_ROOK;
-
-            case PAWN -> piece.getTeamColor() == ChessGame.TeamColor.WHITE ? WHITE_PAWN : BLACK_PAWN;
+        String letter = switch (piece.getPieceType()) {
+            case KING -> "K";
+            case QUEEN -> "Q";
+            case BISHOP -> "B";
+            case KNIGHT -> "N";
+            case ROOK -> "R";
+            case PAWN -> "P";
         };
+        return textColor + " " + letter + " ";
     }
 }
