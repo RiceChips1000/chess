@@ -105,32 +105,27 @@ public class ServerFacade {
 
     private void throwIfNotSuccessful(HttpURLConnection http) throws Exception {
         var status = http.getResponseCode();
-
         if (!isSuccessful(status)) {
             try (InputStream respErr = http.getErrorStream()) {
                 if (respErr != null) {
-                    //should fix me sending the raw data and now send the super beatiful clean data
                     String body = new String(respErr.readAllBytes());
-                    try {
-
-                        var json = new Gson().fromJson(body, java.util.Map.class);
-
-                        if (json != null && json.containsKey("message"))     {
-                            String msg = json.get("message").toString();
-
-                            if (msg.startsWith("Error: ")) {
-                                msg = msg.substring(7);
-                            }
-                            throw new Exception(msg);   
-                        }
-                    } catch (com.google.gson.JsonSyntaxException ignored) {
-                    }
-                    throw new Exception(body);
+                    throw new Exception(extractMessage(body));
                 }
-                // should be good now
             }
             throw new Exception("failure: " + status);
         }
+    }
+
+    private String extractMessage(String body) {
+        try {
+            var json = new Gson().fromJson(body, java.util.Map.class);
+            if (json != null && json.containsKey("message")) {
+                String msg = json.get("message").toString();
+                return msg.startsWith("Error: ") ? msg.substring(7) : msg;
+            }
+        } catch (com.google.gson.JsonSyntaxException ignored) {
+        }
+        return body;
     }
 
     private static <T> T readBody(HttpURLConnection http, Class<T> responseClass) throws IOException {

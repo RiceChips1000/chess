@@ -20,17 +20,6 @@ public class BoardRenderer {
     private static final String BLACK_PIECE_COLOR = SET_TEXT_COLOR_BLUE;
     private static final String RESET = RESET_BG_COLOR + RESET_TEXT_COLOR;
 
-    public static void drawWhiteBoard() {
-        ChessGame game = new ChessGame();
-
-        drawBoard(game.getBoard(), true, null);
-    }
-
-    public static void drawBlackBoard() {
-        ChessGame game = new ChessGame();
-        drawBoard(game.getBoard(), false, null);
-    }
-
     public static void drawBoard(ChessBoard board, boolean whitePerspective, Collection<ChessMove> highlights) {
         Set<ChessPosition> highlightedSquares = new HashSet<>();
         ChessPosition sourceSquare = null;
