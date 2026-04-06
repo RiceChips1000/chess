@@ -1,7 +1,8 @@
 package dataaccess;
 
 import chess.ChessGame;
-import com.google.gson.Gson;  
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import model.AuthData;
 
 import model.GameData;
@@ -15,8 +16,7 @@ import java.util.List;
 
 public class MySqlDataAccess implements DataAccess {
 
-// priv gson dont typo again :(
-    private final Gson gson = new Gson();
+    private final Gson gson = new GsonBuilder().serializeNulls().create();
 
     public MySqlDataAccess() throws DataAccessException {
         DatabaseManager.createDatabase();

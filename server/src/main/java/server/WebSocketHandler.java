@@ -2,6 +2,7 @@ package server;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import model.AuthData;
@@ -23,7 +24,7 @@ public class WebSocketHandler {
     private final DataAccess dataAccess;
 
 
-    private final Gson gson = new Gson();
+    private final Gson gson = new GsonBuilder().serializeNulls().create();
 
     public WebSocketHandler(DataAccess dataAccess)    {
         this.dataAccess = dataAccess;
